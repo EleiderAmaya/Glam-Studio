@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Belinda Studio - Servicios</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;500;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#f04299",
+                        "background-light": "#f8f6f7",
+                        "background-dark": "#221019",
+                        "text-light": "#181114",
+                        "text-dark": "#f8f6f7",
+                        "text-muted-light": "#896175",
+                        "text-muted-dark": "#bba9b3",
+                        "surface-light": "#ffffff",
+                        "surface-dark": "#311825",
+                        "border-light": "#f4f0f2",
+                        "border-dark": "#402032"
+                    },
+                    fontFamily: {
+                        "display": ["Epilogue", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.75rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-text-light dark:text-text-dark">
+<div class="flex flex-col h-screen justify-between">
+<main class="flex-grow overflow-y-auto">
+<header class="sticky top-0 z-10 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-sm border-b border-border-light dark:border-border-dark">
+<div class="flex items-center p-4 justify-between">
+<div class="w-10"></div>
+<h1 class="text-lg font-bold text-center flex-1">Servicios</h1>
+<button class="w-10 h-10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-3xl">add</span>
+</button>
+</div>
+<div class="px-4 pb-4">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-muted-light dark:text-text-muted-dark">search</span>
+<input class="w-full h-12 pl-10 pr-4 rounded-lg bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark focus:ring-primary focus:border-primary placeholder:text-text-muted-light dark:placeholder:text-text-muted-dark" placeholder="Buscar servicio..." type="text"/>
+</div>
+</div>
+</header>
+<div class="divide-y divide-border-light dark:divide-border-dark">
+<div class="p-4 flex justify-between items-center bg-surface-light dark:bg-surface-dark hover:bg-primary/5 dark:hover:bg-primary/10 transition-colors duration-200 cursor-pointer">
+<div>
+<p class="font-medium">Corte + Secado</p>
+<p class="text-sm text-text-muted-light dark:text-text-muted-dark">45 min</p>
+</div>
+<p class="font-medium">$35.000 COP</p>
+</div>
+<div class="p-4 flex justify-between items-center bg-surface-light dark:bg-surface-dark hover:bg-primary/5 dark:hover:bg-primary/10 transition-colors duration-200 cursor-pointer">
+<div>
+<p class="font-medium">Coloración Raíz</p>
+<p class="text-sm text-text-muted-light dark:text-text-muted-dark">90 min</p>
+</div>
+<p class="font-medium">$80.000 COP</p>
+</div>
+<div class="p-4 flex justify-between items-center bg-surface-light dark:bg-surface-dark hover:bg-primary/5 dark:hover:bg-primary/10 transition-colors duration-200 cursor-pointer">
+<div>
+<p class="font-medium">Keratina</p>
+<p class="text-sm text-text-muted-light dark:text-text-muted-dark">180 min</p>
+</div>
+<p class="font-medium">$250.000 COP</p>
+</div>
+</div>
+</main>
+<nav class="border-t border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark py-2 px-4">
+<div class="flex justify-around">
+<a class="flex flex-col items-center gap-1 text-text-muted-light dark:text-text-muted-dark" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="text-xs font-medium">Dashboard</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-text-muted-light dark:text-text-muted-dark" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="text-xs font-medium">Clientes</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">cut</span>
+<span class="text-xs font-bold">Servicios</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-text-muted-light dark:text-text-muted-dark" href="#">
+<span class="material-symbols-outlined">calendar_month</span>
+<span class="text-xs font-medium">Calendario</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-text-muted-light dark:text-text-muted-dark" href="#">
+<span class="material-symbols-outlined">bar_chart</span>
+<span class="text-xs font-medium">Reportes</span>
+</a>
+</div>
+</nav>
+</div>
+
+</body></html>

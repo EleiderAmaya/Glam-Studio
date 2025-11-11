@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Belinda Studio - Clientes</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+<script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#f04299",
+              "background-light": "#f8f6f7",
+              "background-dark": "#221019",
+              "content-light": "#181114",
+              "content-dark": "#f8f6f7",
+              "subtle-light": "#896175",
+              "subtle-dark": "#a88fa0",
+              "surface-light": "#ffffff",
+              "surface-dark": "#2d1621",
+            },
+            fontFamily: {
+              display: ["Epilogue", "sans-serif"],
+            },
+            borderRadius: {
+              DEFAULT: "0.5rem",
+              lg: "1rem",
+              xl: "1.5rem",
+              full: "9999px",
+            },
+          },
+        },
+      };
+    </script>
+<style>
+      body {
+        font-family: "Epilogue", sans-serif;
+      }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-content-light dark:text-content-dark font-display">
+<div class="mx-auto flex h-screen max-w-md flex-col">
+<header class="flex items-center justify-between bg-surface-light p-4 dark:bg-surface-dark">
+<div class="w-10"></div>
+<h1 class="text-xl font-bold">Clientes</h1>
+<button class="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-white">
+<svg fill="currentColor" height="24" viewBox="0 0 256 256" width="24" xmlns="http://www.w3.org/2000/svg">
+<path d="M224,128a8,8,0,0,1-8,8H136v80a8,8,0,0,1-16,0V136H40a8,8,0,0,1,0-16h80V40a8,8,0,0,1,16,0v80h80A8,8,0,0,1,224,128Z"></path>
+</svg>
+</button>
+</header>
+<main class="flex-1 overflow-y-auto">
+<div class="sticky top-0 bg-surface-light p-4 dark:bg-surface-dark">
+<div class="relative">
+<div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+<svg class="h-5 w-5 text-subtle-light dark:text-subtle-dark" fill="currentColor" height="20" viewBox="0 0 256 256" width="20" xmlns="http://www.w3.org/2000/svg">
+<path d="M229.66,218.34l-50.07-50.06a88.11,88.11,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z"></path>
+</svg>
+</div>
+<input class="w-full rounded-lg border-none bg-background-light py-3 pl-10 pr-4 text-content-light placeholder-subtle-light focus:ring-2 focus:ring-primary dark:bg-background-dark dark:text-content-dark dark:placeholder-subtle-dark" placeholder="Buscar cliente..." type="search"/>
+</div>
+</div>
+<ul class="divide-y divide-background-light dark:divide-background-dark">
+<li class="flex items-center gap-4 bg-surface-light p-4 dark:bg-surface-dark">
+<img alt="Ana María" class="h-14 w-14 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAma41JEGYGx4eI07bu5Sk-Xt55VGX6FnF3yULhRA8M1a5NspKWqR4vU_rTmU7t7TiHyTr0xqtn1_tPUQdQhFp-9dEaRtqZIGdLCKvLzYuw0g8IwQgAkaODrK1f-6Rkym0XF3XxvU098Qj_ucN5DFPTxOxfBXW8v3k5566mxh6L0cav6I0xSxxKZqc-NyBTI2QB_FI-DktimFDbY55NpFxgVeeYufjV1KhH0Z2YeIlNb3_MiiM5fTI6gSuZ6MDqeSuvZhAdod2JSnFY"/>
+<div class="flex-1">
+<p class="font-bold">Ana María</p>
+<span class="rounded-full bg-primary/20 px-2 py-1 text-xs font-medium text-primary">VIP</span>
+</div>
+<svg class="h-5 w-5 text-subtle-light dark:text-subtle-dark" fill="currentColor" height="20" viewBox="0 0 256 256" width="20" xmlns="http://www.w3.org/2000/svg">
+<path d="M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z"></path>
+</svg>
+</li>
+<li class="flex items-center gap-4 bg-surface-light p-4 dark:bg-surface-dark">
+<img alt="Carlos López" class="h-14 w-14 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDtdrlOEswDxHx1TvkhvPcKhxaDn9q6-VkKO_493SYH58OYdDydxnYDo8y_fA0ZLgv5AjTVK_Cs6aZ6yJDhATdotTxbMUkklvD5LFE8Qj5TQn28v1nW3Hlai_AksFENkk2Ud7_KtlfvPwmPZElIJ_Ho8Djk7j-bAjrBDC_JFCf14jFKT9BOaUGjxx0odYfRPGRFoA25DdWXMUj0SmCzfrep9NEfWi_WQqeVrjOGSqoB-B98iotvfHRcWBF8LTA2jPHUyCZOQkR06vZo"/>
+<div class="flex-1">
+<p class="font-medium">Carlos López</p>
+</div>
+<svg class="h-5 w-5 text-subtle-light dark:text-subtle-dark" fill="currentColor" height="20" viewBox="0 0 256 256" width="20" xmlns="http://www.w3.org/2000/svg">
+<path d="M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z"></path>
+</svg>
+</li>
+<li class="flex items-center gap-4 bg-surface-light p-4 dark:bg-surface-dark">
+<img alt="Sofía Restrepo" class="h-14 w-14 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDc4WyM_kTPJrV5oeZgWDEfpGB14FVk0Ym1_reqaYMwLz-kHzzNi1oXzUQ-rdf4fqmad3jU4yCQxz89vVv40P0It0dwZT4W0gBAaXXGsPeEZBJn8SGkhc7WoQPQkci-DZssFFsAXgnUlscSH7RWKe2TzMGZFTMUFobmzkDiJBM9p9xku4EJ4d9YjUzpDpL2wT3wAQXwHYZc-S8YoTzffYkY8As6MkWM6ZuNmHT_2IOxDgTp_j2PxwGCBDT-7BoZ8SnmA9KeGdhmf24X"/>
+<div class="flex-1">
+<p class="font-medium">Sofía Restrepo</p>
+<span class="rounded-full bg-primary/20 px-2 py-1 text-xs font-medium text-primary">Recurrente</span>
+</div>
+<svg class="h-5 w-5 text-subtle-light dark:text-subtle-dark" fill="currentColor" height="20" viewBox="0 0 256 256" width="20" xmlns="http://www.w3.org/2000/svg">
+<path d="M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z"></path>
+</svg>
+</li>
+</ul>
+</main>
+<nav class="border-t border-background-light bg-surface-light px-4 pt-2 pb-4 dark:border-background-dark dark:bg-surface-dark">
+<div class="flex justify-around">
+<a class="flex flex-col items-center gap-1 text-subtle-light dark:text-subtle-dark" href="#">
+<svg fill="currentColor" height="24" viewBox="0 0 256 256" width="24" xmlns="http://www.w3.org/2000/svg">
+<path d="M218.83,103.77l-80-75.48a1.14,1.14,0,0,1-.11-.11,16,16,0,0,0-21.53,0l-.11.11L37.17,103.77A16,16,0,0,0,32,115.55V208a16,16,0,0,0,16,16H96a16,16,0,0,0,16-16V160h32v48a16,16,0,0,0,16,16h48a16,16,0,0,0,16-16V115.55A16,16,0,0,0,218.83,103.77ZM208,208H160V160a16,16,0,0,0-16-16H112a16,16,0,0,0-16,16v48H48V115.55l.11-.1L128,40l79.9,75.43.11.1Z"></path>
+</svg>
+<span class="text-xs">Dashboard</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-primary dark:text-primary" href="#">
+<svg fill="currentColor" height="24" viewBox="0 0 256 256" width="24" xmlns="http://www.w3.org/2000/svg">
+<path d="M164.47,195.63a8,8,0,0,1-6.7,12.37H10.23a8,8,0,0,1-6.7-12.37,95.83,95.83,0,0,1,47.22-37.71,60,60,0,1,1,66.5,0A95.83,95.83,0,0,1,164.47,195.63Zm87.91-.15a95.87,95.87,0,0,0-47.13-37.56A60,60,0,0,0,144.7,54.59a4,4,0,0,0-1.33,6A75.83,75.83,0,0,1,147,150.53a4,4,0,0,0,1.07,5.53,112.32,112.32,0,0,1,29.85,30.83,23.92,23.92,0,0,1,3.65,16.47,4,4,0,0,0,3.95,4.64h60.3a8,8,0,0,0,7.73-5.93A8.22,8.22,0,0,0,252.38,195.48Z"></path>
+</svg>
+<span class="text-xs font-bold">Clientes</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-subtle-light dark:text-subtle-dark" href="#">
+<svg fill="currentColor" height="24" viewBox="0 0 256 256" width="24" xmlns="http://www.w3.org/2000/svg">
+<path d="M157.73,113.13A8,8,0,0,1,159.82,102L227.48,55.7a8,8,0,0,1,9,13.21l-67.67,46.3a7.92,7.92,0,0,1-4.51,1.4A8,8,0,0,1,157.73,113.13Zm80.87,85.09a8,8,0,0,1-11.12,2.08L136,137.7,93.49,166.78a36,36,0,1,1-9-13.19L121.83,128,84.44,102.41a35.86,35.86,0,1,1,9-13.19l143,97.87A8,8,0,0,1,238.6,198.22ZM80,180a20,20,0,1,0-5.86,14.14A19.85,19.85,0,0,0,80,180ZM74.14,90.13a20,20,0,1,0-28.28,0A19.85,19.85,0,0,0,74.14,90.13Z"></path>
+</svg>
+<span class="text-xs">Servicios</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-subtle-light dark:text-subtle-dark" href="#">
+<svg fill="currentColor" height="24" viewBox="0 0 256 256" width="24" xmlns="http://www.w3.org/2000/svg">
+<path d="M208,32H184V24a8,8,0,0,0-16,0v8H88V24a8,8,0,0,0-16,0v8H48A16,16,0,0,0,32,48V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V48A16,16,0,0,0,208,32ZM72,48v8a8,8,0,0,0,16,0V48h80v8a8,8,0,0,0,16,0V48h24V80H48V48ZM208,208H48V96H208V208Zm-96-88v64a8,8,0,0,1-16,0V132.94l-4.42,2.22a8,8,0,0,1-7.16-14.32l16-8A8,8,0,0,1,112,120Zm59.16,30.45L152,176h16a8,8,0,0,1,0,16H136a8,8,0,0,1-6.4-12.8l28.78-38.37A8,8,0,1,0,145.07,132a8,8,0,1,1-13.85-8A24,24,0,0,1,176,136,23.76,23.76,0,0,1,171.16,150.45Z"></path>
+</svg>
+<span class="text-xs">Calendario</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-subtle-light dark:text-subtle-dark" href="#">
+<svg fill="currentColor" height="24" viewBox="0 0 256 256" width="24" xmlns="http://www.w3.org/2000/svg">
+<path d="M216,40H136V24a8,8,0,0,0-16,0V40H40A16,16,0,0,0,24,56V176a16,16,0,0,0,16,16H79.36L57.75,219a8,8,0,0,0,12.5,10l29.59-37h56.32l29.59,37a8,8,0,1,0,12.5-10l-21.61-27H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40Zm0,136H40V56H216V176ZM104,120v24a8,8,0,0,1-16,0V120a8,8,0,0,1,16,0Zm32-16v40a8,8,0,0,1-16,0V104a8,8,0,0,1,16,0Zm32-16v56a8,8,0,0,1-16,0V88a8,8,0,0,1,16,0Z"></path>
+</svg>
+<span class="text-xs">Reportes</span>
+</a>
+</div>
+</nav>
+</div>
+
+</body></html>

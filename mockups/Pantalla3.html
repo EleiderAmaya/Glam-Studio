@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Belinda Studio - Nuevo Cliente</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;500;700;900&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#f04299",
+              "background-light": "#f8f6f7",
+              "background-dark": "#221019",
+              "text-light": "#181114",
+              "text-dark": "#f8f6f7",
+              "muted-light": "#896175",
+              "muted-dark": "#a98fa0",
+              "input-light": "#f4f0f2",
+              "input-dark": "#3a2530",
+            },
+            fontFamily: {
+              display: ["Epilogue", "sans-serif"],
+            },
+            borderRadius: { DEFAULT: "0.5rem", lg: "1rem", xl: "1.5rem", full: "9999px" },
+          },
+        },
+      };
+    </script>
+<style>
+      body {
+        font-family: "Epilogue", sans-serif;
+      }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display">
+<div class="flex h-screen w-full flex-col justify-between">
+<div class="flex-grow overflow-y-auto">
+<header class="sticky top-0 z-10 flex items-center justify-between border-b border-input-light bg-background-light p-4 dark:border-input-dark dark:bg-background-dark">
+<button class="text-text-light dark:text-text-dark">
+<svg fill="currentColor" height="24" viewBox="0 0 256 256" width="24" xmlns="http://www.w3.org/2000/svg">
+<path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"></path>
+</svg>
+</button>
+<h1 class="text-lg font-bold text-text-light dark:text-text-dark">Nuevo Cliente</h1>
+<div class="w-6"></div>
+</header>
+<main class="p-4">
+<form class="space-y-6">
+<div>
+<label class="mb-2 block text-sm font-medium text-text-light dark:text-text-dark" for="fullName">Nombre Completo</label>
+<input class="form-input block w-full rounded-lg border-none bg-input-light p-4 text-text-light placeholder-muted-light focus:ring-2 focus:ring-primary dark:bg-input-dark dark:text-text-dark dark:placeholder-muted-dark" id="fullName" placeholder="Escribe el nombre completo" type="text"/>
+</div>
+<div>
+<label class="mb-2 block text-sm font-medium text-text-light dark:text-text-dark" for="phone">Teléfono (+57 xxx xxxx)</label>
+<input class="form-input block w-full rounded-lg border-none bg-input-light p-4 text-text-light placeholder-muted-light focus:ring-2 focus:ring-primary dark:bg-input-dark dark:text-text-dark dark:placeholder-muted-dark" id="phone" placeholder="Escribe el número de teléfono" type="tel"/>
+</div>
+<div>
+<label class="mb-2 block text-sm font-medium text-text-light dark:text-text-dark" for="email">Email (opcional)</label>
+<input class="form-input block w-full rounded-lg border-none bg-input-light p-4 text-text-light placeholder-muted-light focus:ring-2 focus:ring-primary dark:bg-input-dark dark:text-text-dark dark:placeholder-muted-dark" id="email" placeholder="Escribe el correo electrónico" type="email"/>
+</div>
+<div>
+<label class="mb-2 block text-sm font-medium text-text-light dark:text-text-dark" for="address">Dirección principal (casa/trabajo)</label>
+<input class="form-input block w-full rounded-lg border-none bg-input-light p-4 text-text-light placeholder-muted-light focus:ring-2 focus:ring-primary dark:bg-input-dark dark:text-text-dark dark:placeholder-muted-dark" id="address" placeholder="Escribe la dirección principal" type="text"/>
+</div>
+<div>
+<label class="mb-2 block text-sm font-medium text-text-light dark:text-text-dark" for="neighborhood">Barrio (opcional)</label>
+<input class="form-input block w-full rounded-lg border-none bg-input-light p-4 text-text-light placeholder-muted-light focus:ring-2 focus:ring-primary dark:bg-input-dark dark:text-text-dark dark:placeholder-muted-dark" id="neighborhood" placeholder="Escribe el barrio" type="text"/>
+</div>
+<div>
+<label class="mb-2 block text-sm font-medium text-text-light dark:text-text-dark" for="notes">Notas (alergias, preferencias)</label>
+<textarea class="form-textarea block w-full resize-none rounded-lg border-none bg-input-light p-4 text-text-light placeholder-muted-light focus:ring-2 focus:ring-primary dark:bg-input-dark dark:text-text-dark dark:placeholder-muted-dark" id="notes" placeholder="Escribe notas relevantes aquí" rows="4"></textarea>
+</div>
+<div class="flex items-center justify-between rounded-lg bg-input-light p-4 dark:bg-input-dark">
+<span class="font-medium text-text-light dark:text-text-dark">Estado: Activo</span>
+<label class="relative inline-flex cursor-pointer items-center">
+<input checked="" class="peer sr-only" type="checkbox" value=""/>
+<div class="peer h-6 w-11 rounded-full bg-muted-light after:absolute after:left-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-primary peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary/50 dark:border-gray-600 dark:bg-muted-dark"></div>
+</label>
+</div>
+</form>
+</main>
+</div>
+<div class="border-t border-input-light bg-background-light p-4 dark:border-input-dark dark:bg-background-dark">
+<div class="grid grid-cols-2 gap-4">
+<button class="w-full rounded-lg bg-input-light py-3 text-center font-bold text-text-light dark:bg-input-dark dark:text-text-dark">Eliminar</button>
+<button class="w-full rounded-lg bg-primary py-3 text-center font-bold text-white">Guardar</button>
+</div>
+</div>
+<footer class="sticky bottom-0 border-t border-input-light bg-background-light px-4 pb-3 pt-2 dark:border-input-dark dark:bg-background-dark">
+<nav class="flex justify-around">
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-muted-light dark:text-muted-dark" href="#">
+<svg fill="currentColor" height="24" viewBox="0 0 256 256" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M218.83,103.77l-80-75.48a1.14,1.14,0,0,1-.11-.11,16,16,0,0,0-21.53,0l-.11.11L37.17,103.77A16,16,0,0,0,32,115.55V208a16,16,0,0,0,16,16H96a16,16,0,0,0,16-16V160h32v48a16,16,0,0,0,16,16h48a16,16,0,0,0,16-16V115.55A16,16,0,0,0,218.83,103.77ZM208,208H160V160a16,16,0,0,0-16-16H112a16,16,0,0,0-16,16v48H48V115.55l.11-.1L128,40l79.9,75.43.11.1Z"></path></svg>
+<span class="text-xs font-medium">Dashboard</span>
+</a>
+<a class="flex flex-1 flex-col items-center justify-end gap-1 rounded-full text-primary" href="#">
+<svg fill="currentColor" height="24" viewBox="0 0 256 256" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M164.47,195.63a8,8,0,0,1-6.7,12.37H10.23a8,8,0,0,1-6.7-12.37,95.83,95.83,0,0,1,47.22-37.71,60,60,0,1,1,66.5,0A95.83,95.83,0,0,1,164.47,195.63Zm87.91-.15a95.87,95.87,0,0,0-47.13-37.56A60,60,0,0,0,144.7,54.59a4,4,0,0,0-1.33,6A75.83,75.83,0,0,1,147,150.53a4,4,0,0,0,1.07,5.53,112.32,112.32,0,0,1,29.85,30.83,23.92,23.92,0,0,1,3.65,16.47,4,4,0,0,0,3.95,4.64h60.3a8,8,0,0,0,7.73-5.93A8.22,8.22,0,0,0,252.38,195.48Z"></path></svg>
+<span class="text-xs font-medium">Clientes</span>
+</a>
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-muted-light dark:text-muted-dark" href="#">
+<svg fill="currentColor" height="24" viewBox="0 0 256 256" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M157.73,113.13A8,8,0,0,1,159.82,102L227.48,55.7a8,8,0,0,1,9,13.21l-67.67,46.3a7.92,7.92,0,0,1-4.51,1.4A8,8,0,0,1,157.73,113.13Zm80.87,85.09a8,8,0,0,1-11.12,2.08L136,137.7,93.49,166.78a36,36,0,1,1-9-13.19L121.83,128,84.44,102.41a35.86,35.86,0,1,1,9-13.19l143,97.87A8,8,0,0,1,238.6,198.22ZM80,180a20,20,0,1,0-5.86,14.14A19.85,19.85,0,0,0,80,180ZM74.14,90.13a20,20,0,1,0-28.28,0A19.85,19.85,0,0,0,74.14,90.13Z"></path></svg>
+<span class="text-xs font-medium">Servicios</span>
+</a>
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-muted-light dark:text-muted-dark" href="#">
+<svg fill="currentColor" height="24" viewBox="0 0 256 256" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M208,32H184V24a8,8,0,0,0-16,0v8H88V24a8,8,0,0,0-16,0v8H48A16,16,0,0,0,32,48V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V48A16,16,0,0,0,208,32ZM72,48v8a8,8,0,0,0,16,0V48h80v8a8,8,0,0,0,16,0V48h24V80H48V48ZM208,208H48V96H208V208Zm-96-88v64a8,8,0,0,1-16,0V132.94l-4.42,2.22a8,8,0,0,1-7.16-14.32l16-8A8,8,0,0,1,112,120Zm59.16,30.45L152,176h16a8,8,0,0,1,0,16H136a8,8,0,0,1-6.4-12.8l28.78-38.37A8,8,0,1,0,145.07,132a8,8,0,1,1-13.85-8A24,24,0,0,1,176,136,23.76,23.76,0,0,1,171.16,150.45Z"></path></svg>
+<span class="text-xs font-medium">Calendario</span>
+</a>
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-muted-light dark:text-muted-dark" href="#">
+<svg fill="currentColor" height="24" viewBox="0 0 256 256" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M216,40H136V24a8,8,0,0,0-16,0V40H40A16,16,0,0,0,24,56V176a16,16,0,0,0,16,16H79.36L57.75,219a8,8,0,0,0,12.5,10l29.59-37h56.32l29.59,37a8,8,0,1,0,12.5-10l-21.61-27H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40Zm0,136H40V56H216V176ZM104,120v24a8,8,0,0,1-16,0V120a8,8,0,0,1,16,0Zm32-16v40a8,8,0,0,1-16,0V104a8,8,0,0,1,16,0Zm32-16v56a8,8,0,0,1-16,0V88a8,8,0,0,1,16,0Z"></path></svg>
+<span class="text-xs font-medium">Reportes</span>
+</a>
+</nav>
+</footer>
+</div>
+
+</body></html>
