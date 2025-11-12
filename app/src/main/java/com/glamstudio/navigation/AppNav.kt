@@ -1,5 +1,28 @@
 package com.glamstudio.navigation
 
+/**
+ * Guía rápida de navegación (Compose + Navigation)
+ *
+ * Conceptos:
+ * - Route: rutas tipadas para cada pantalla. Centraliza y evita strings sueltos.
+ * - NavHost: registro de pantallas (`composable`) y ruta de inicio.
+ * - Bottom navigation: items declarados en `bottomItems`. Cada item apunta a una `Route` principal.
+ *
+ * Nueva pantalla principal (con tab en bottom bar):
+ * 1) Crea `MiNuevaScreen` en `com.glamstudio.ui.screens`.
+ * 2) Agrega `data object MiNueva : Route("mi_nueva")` en `Route`.
+ * 3) Registra en `NavHost`: `composable(Route.MiNueva.path) { MiNuevaScreen(...) }`.
+ * 4) Añade un `BottomItem` a `bottomItems` con iconos y label.
+ *
+ * Pantalla secundaria (flujo sin tab):
+ * 1) Crea el composable, p. ej. `DetalleXScreen`.
+ * 2) Añade `data object DetalleX : Route("x/detail")` en `Route`.
+ * 3) Registra su `composable` en el `NavHost` y navega con `navController.navigate(Route.DetalleX.path)`.
+ *
+ * Tips:
+ * - Usa callbacks en las pantallas (lambdas) y resuelve la navegación aquí.
+ * - Rutas cortas y consistentes. Para parámetros: define `clients/detail/{id}` y args en el `NavHost`.
+ */
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.ContentCut
@@ -41,6 +64,15 @@ import com.glamstudio.ui.screens.ClientDetailScreen
 import com.glamstudio.ui.screens.ServiceDetailScreen
 import com.glamstudio.ui.screens.AppointmentDetailScreen
 
+/**
+ * Rutas tipadas de la app.
+ *
+ * Principales: aparecen en la barra inferior.
+ * Secundarias: pantallas a las que se llega por flujo (crear/editar/detalle).
+ *
+ * Para rutas con parámetros, usa placeholders (e.g. "clients/detail/{id}") y define los argumentos
+ * al registrar el `composable` en el `NavHost`.
+ */
 sealed class Route(val path: String) {
     data object Home : Route("home")
     data object Clients : Route("clients")
@@ -58,6 +90,12 @@ sealed class Route(val path: String) {
     data object AppointmentDetail : Route("appointments/detail")
 }
 
+/**
+ * Modelo de item para el bottom navigation.
+ * - route: ruta principal asociada
+ * - label: texto visible
+ * - selectedIcon/unselectedIcon: iconos para estados
+ */
 data class BottomItem(
     val route: Route,
     val label: String,
@@ -65,6 +103,7 @@ data class BottomItem(
     val unselectedIcon: ImageVector,
 )
 
+// Items visibles en la barra inferior. Agrega o quita según las pantallas principales.
 private val bottomItems = listOf(
     BottomItem(Route.Home, "Inicio", Icons.Filled.Home, Icons.Outlined.Home),
     BottomItem(Route.Clients, "Clientes", Icons.Filled.Group, Icons.Outlined.Group),
@@ -75,6 +114,15 @@ private val bottomItems = listOf(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
+/**
+ * Punto de entrada de la UI:
+ * - Declara `Scaffold` con barra inferior.
+ * - Gestiona `NavController` y registra rutas en el `NavHost`.
+ *
+ * Reutilización:
+ * - Las pantallas exponen callbacks (onClick...) y la navegación se decide aquí.
+ * - Para añadir pantallas nuevas: define `Route`, registra `composable` y, si es principal, añade `BottomItem`.
+ */
 fun AppRoot() {
     val navController = rememberNavController()
     val backStackEntry by navController.currentBackStackEntryAsState()
@@ -88,6 +136,9 @@ fun AppRoot() {
                     NavigationBarItem(
                         selected = selected,
                         onClick = {
+                            // Navegación con preservación de estado:
+                            // 1) Si la ruta ya existe en el back stack, volvemos a ella.
+                            // 2) Si no, navegamos evitando duplicados y restaurando estado.
                             val popped = navController.popBackStack(item.route.path, false)
                             if (!popped) {
                                 navController.navigate(item.route.path) {
@@ -115,6 +166,7 @@ fun AppRoot() {
             startDestination = Route.Home.path,
             modifier = Modifier.padding(paddingValues)
         ) {
+            // Pantallas principales
             composable(Route.Home.path) {
                 HomeScreen(
                     onFabClick = { navController.navigate(Route.Calendar.path) },
@@ -143,7 +195,7 @@ fun AppRoot() {
             composable(Route.Billing.path) { InvoiceScreen(showBack = false, onViewReports = { navController.navigate(Route.Reports.path) }) }
             composable(Route.Reports.path) { ReportsScreen(onBack = { navController.popBackStack() }) }
 
-            // secundarios
+            // Pantallas secundarias (flujo)
             composable(Route.NewClient.path) { NewClientScreen(onSaved = { navController.popBackStack() }, onBack = { navController.popBackStack() }) }
             composable(Route.NewService.path) { NewServiceScreen(onSaved = { navController.popBackStack() }, onBack = { navController.popBackStack() }) }
             composable(Route.Invoice.path) { InvoiceScreen(showBack = true, onBack = { navController.popBackStack() }, onViewReports = { navController.navigate(Route.Reports.path) }) }

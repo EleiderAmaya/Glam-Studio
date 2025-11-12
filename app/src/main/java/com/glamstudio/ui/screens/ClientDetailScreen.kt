@@ -15,6 +15,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
+/**
+ * Detalle de cliente.
+ *
+ * Reutilización:
+ * - Para navegar con ID, define ruta con parámetro (e.g. "clients/detail/{id}") y lee args en el `composable`.
+ * - Carga el cliente en un ViewModel (por id) y muestra estados: cargando, error, datos.
+ * - Acciones (editar, eliminar, agendar) deben exponerse como callbacks o navegar desde `AppRoot`.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ClientDetailScreen(onBack: () -> Unit = {}) {

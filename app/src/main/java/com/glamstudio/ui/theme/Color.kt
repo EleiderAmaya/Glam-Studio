@@ -3,6 +3,13 @@ package com.glamstudio.ui.theme
 import androidx.compose.ui.graphics.Color
 
 // Paleta base (modo claro)
+/**
+ * Colores principales de UI.
+ *
+ * Uso:
+ * - Importa `Primary`, `BorderLight`, etc., para mantener consistencia visual.
+ * - Si cambias identidad visual, ajusta estos valores y evita hardcodear colores en pantallas.
+ */
 val Primary = Color(0xFFF04299)
 val BackgroundLight = Color(0xFFF8F6F7)
 val SurfaceLight = Color(0xFFFFFFFF)

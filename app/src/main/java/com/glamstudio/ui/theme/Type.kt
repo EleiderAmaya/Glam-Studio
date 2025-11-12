@@ -7,6 +7,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
 // Set of Material typography styles to start with
+/**
+ * Tipografías de la app.
+ *
+ * Uso:
+ * - Accede vía `MaterialTheme.typography.*`.
+ * - Para estilos propios (p. ej. `KpiTitle`), añade nuevas entradas y úsalas de forma consistente.
+ */
 val Typography = Typography(
     bodyLarge = TextStyle(
         fontFamily = FontFamily.Default,

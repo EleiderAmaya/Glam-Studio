@@ -26,6 +26,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
+/**
+ * Formulario de creación/edición de cliente.
+ *
+ * Patrón:
+ * - Campos controlados con estado.
+ * - Switch/acciones al final y botones principales de flujo (Guardar/Eliminar).
+ *
+ * Reutilización:
+ * - Extrae validaciones a un ViewModel y refleja errores con `isError`/`supportingText`.
+ * - Usa `onSaved` para retornar/navegar tras persistir.
+ * - Si compartes UI con edición, inicializa los estados con los valores del cliente existente.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NewClientScreen(onSaved: () -> Unit, onBack: () -> Unit = {}) {

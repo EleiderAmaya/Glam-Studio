@@ -15,6 +15,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
+/**
+ * Detalle de servicio.
+ *
+ * Reutilización:
+ * - Para parámetros, define ruta "services/detail/{serviceId}" y recupera el id en el `composable`.
+ * - Renderiza datos desde un ViewModel (carga por id) y muestra estados de UI.
+ * - Ofrece acciones (editar/eliminar) como callbacks para mantener separación de navegación.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ServiceDetailScreen(onBack: () -> Unit = {}) {

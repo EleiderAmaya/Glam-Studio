@@ -31,6 +31,17 @@ import com.glamstudio.ui.theme.Primary
 
 data class ProximaCita(val nombre: String, val detalle: String)
 
+/**
+ * Dashboard inicial con:
+ * - Lista compacta de próximas citas.
+ * - KPIs rápidos reutilizables mediante `KpiCard`.
+ * - FAB para acción primaria (agenda).
+ *
+ * Reutilización:
+ * - Para añadir nuevas secciones, crea composables pequeños (p. ej. `KpiCard`, `ResumenXCard`) y colócalos aquí.
+ * - `onFabClick`, `onReportsClick`, `onAppointmentClick` se pasan desde navegación; aquí solo emitimos eventos.
+ * - Sustituye la lista demo `citas` por datos reales (ViewModel/StateFlow) sin tocar la navegación.
+ */
 @Composable
 fun HomeScreen(onFabClick: () -> Unit, onReportsClick: () -> Unit = {}, onAppointmentClick: () -> Unit = {}) {
     val citas = listOf(
@@ -99,6 +110,14 @@ fun HomeScreen(onFabClick: () -> Unit, onReportsClick: () -> Unit = {}, onAppoin
     }
 }
 
+/**
+ * Tarjeta simple para KPIs. Reutiliza este patrón para métricas en cualquier pantalla.
+ *
+ * Ejemplo:
+ * ```
+ * KpiCard(titulo = "Ticket promedio", valor = "$38.000")
+ * ```
+ */
 @Composable
 fun KpiCard(titulo: String, valor: String, modifier: Modifier = Modifier) {
     Surface(

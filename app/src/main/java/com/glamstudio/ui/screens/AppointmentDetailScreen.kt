@@ -15,6 +15,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
+/**
+ * Detalle de cita.
+ *
+ * Reutilización:
+ * - Para navegar con parámetros: "appointments/detail/{appointmentId}" y carga en ViewModel.
+ * - Acciones comunes: reprogramar, cancelar, convertir en factura (usa callbacks).
+ * - Muestra secciones: cliente, servicio, hora, notas; extrae cada una si crecen.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppointmentDetailScreen(onBack: () -> Unit = {}) {

@@ -27,6 +27,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
+/**
+ * Pantalla de Facturación.
+ *
+ * Patrón:
+ * - Encabezado opcional con botón de atrás (controlado por `showBack`).
+ * - Lista de servicios seleccionables con precio.
+ * - Resumen de totales y acciones principales (generar, marcar pagada, anular).
+ *
+ * Reutilización:
+ * - Reemplaza los `remember { mutableStateOf(...) }` por estado desde ViewModel.
+ * - `onViewReports` permite encadenar al módulo de reportes.
+ * - Si necesitas aplicar impuestos/descuentos, agrega filas al bloque de totales.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InvoiceScreen(showBack: Boolean = false, onBack: () -> Unit = {}, onViewReports: () -> Unit = {}) {
@@ -82,6 +95,14 @@ fun InvoiceScreen(showBack: Boolean = false, onBack: () -> Unit = {}, onViewRepo
     }
 }
 
+/**
+ * Fila reutilizable para ítems con check y precio.
+ *
+ * Uso:
+ * ```
+ * RowCheckPrecio("Coloración", "$80.000", checked, onCheckedChange)
+ * ```
+ */
 @Composable
 private fun RowCheckPrecio(titulo: String, precio: String, checked: Boolean, onCheckedChange: (Boolean) -> Unit) {
     androidx.compose.foundation.layout.Row(

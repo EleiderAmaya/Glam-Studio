@@ -21,6 +21,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
+/**
+ * Pantalla de Reportes.
+ *
+ * Patrón:
+ * - AppBar con navegación atrás.
+ * - Contenedor de métricas/indicadores.
+ *
+ * Reutilización:
+ * - Inserta tus cards/diagramas (p. ej. `KpiCard`, `BarChart`) dentro del `Surface`.
+ * - Si navegas desde aquí a detalles, expón callbacks en los widgets y manéjalos desde `AppRoot`.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReportsScreen(onBack: () -> Unit = {}) {

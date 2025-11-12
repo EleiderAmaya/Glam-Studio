@@ -29,6 +29,15 @@ import com.glamstudio.ui.theme.BorderLight
 
 data class Servicio(val nombre: String, val duracion: String, val precio: String)
 
+/**
+ * Lista de servicios con búsqueda y acción de crear.
+ *
+ * Reutilización:
+ * - Reemplaza `servicios` por estado proveniente de un ViewModel.
+ * - Usa `onAddClick` para navegación a creación/edición.
+ * - Emite `onItemClick(servicio)` para ir a detalle sin acoplar navegación a UI.
+ * - Extrae la celda a `ServiceItem(...)` si se vuelve compleja.
+ */
 @Composable
 fun ServicesScreen(onAddClick: () -> Unit, onItemClick: (Servicio) -> Unit = {}) {
     val query = remember { mutableStateOf("") }

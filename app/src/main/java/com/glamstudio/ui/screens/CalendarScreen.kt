@@ -35,6 +35,18 @@ import com.glamstudio.ui.theme.Primary
 
 enum class Ocupacion { LIBRE, MEDIO, COMPLETO }
 
+/**
+ * Calendario mensual simplificado con selección de semana y lista de citas del día.
+ *
+ * Reutilización:
+ * - Reemplaza `dias/ocupacionDemo` por tu modelo real (p. ej. generado desde un repositorio).
+ * - Usa `onGenerateInvoice` para disparar el flujo de facturación desde una cita.
+ * - Usa `onAppointmentClick` para navegar a detalle de cita.
+ *
+ * Extensión:
+ * - Para parámetros (mes/año), expón `@Composable fun CalendarScreen(year: Int, month: Int, ...)`.
+ * - Para disponibilidad por día, mapea `Ocupacion` según tus reglas de negocio.
+ */
 @Composable
 fun CalendarScreen(onGenerateInvoice: () -> Unit, onAppointmentClick: () -> Unit = {}) {
     // Demo: 31 días, con algunos ocupados/medios
@@ -137,7 +149,7 @@ private fun DiaCell(
             modifier = Modifier
                 .height(44.dp)
                 .fillMaxWidth()
-                .background(color.copy(alpha = if (color == Color.Transparent) 0f else 0.15f), CircleShape)
+                .background(color.copy(alpha = if (color == Color.Transparent) 0f else 0.15f), CircleShape) // Indicador de ocupación
         ) {
             if (dia > 0) {
                 Text(text = dia.toString(), style = MaterialTheme.typography.bodyMedium)

@@ -25,6 +25,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
+/**
+ * Formulario de creación/edición de servicio.
+ *
+ * Reutilización:
+ * - Si compartes este formulario para editar, inicializa `nombre/duracion/precio` con valores del servicio.
+ * - Para validaciones, usa `isError` y `supportingText` en `OutlinedTextField`.
+ * - `onSaved` debe persistir (ViewModel) y luego navegar hacia atrás o a detalle.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NewServiceScreen(onSaved: () -> Unit, onBack: () -> Unit = {}) {

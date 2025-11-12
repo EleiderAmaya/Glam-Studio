@@ -37,6 +37,19 @@ import com.glamstudio.ui.theme.Primary
 
 data class Cliente(val nombre: String, val vip: Boolean)
 
+/**
+ * Patrón: Lista + búsqueda + acción primaria
+ *
+ * Estructura:
+ * - Título con acción de añadir (usa `onAddClick`).
+ * - Barra de búsqueda controlada (State) para filtrar.
+ * - Lista de items clicables que emiten `onItemClick`.
+ *
+ * Reutilización:
+ * - Sustituye la fuente de datos `clientes` por un `ViewModel` (StateFlow/LiveData).
+ * - Mantén las lambdas de navegación (`onAddClick`, `onItemClick`) para no acoplar UI a navegación.
+ * - Extrae el item a un composable `ClienteItem` si la celda crece en complejidad.
+ */
 @Composable
 fun ClientsScreen(onAddClick: () -> Unit, onItemClick: (Cliente) -> Unit = {}) {
     val query = remember { mutableStateOf("") }
@@ -79,6 +92,7 @@ fun ClientsScreen(onAddClick: () -> Unit, onItemClick: (Cliente) -> Unit = {}) {
                             modifier = Modifier.fillMaxWidth().padding(12.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
+                            // Placeholder de avatar. Reemplaza con Image(...) si existe foto del cliente.
                             androidx.compose.foundation.Canvas(modifier = Modifier.height(56.dp).fillMaxWidth(0.15f)) {
                                 drawCircle(color = Primary)
                             }
