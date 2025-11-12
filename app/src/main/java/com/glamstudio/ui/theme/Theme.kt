@@ -15,6 +15,18 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
+/**
+ * Sistema de tema de la app.
+ *
+ * Uso:
+ * - Envuelve todo en `GlamStudioTheme { ... }` (ya se hace en `MainActivity`).
+ * - Controla modo oscuro con `darkTheme` o deja que use el sistema.
+ * - `dynamicColor` usa Material You en Android 12+.
+ *
+ * Extensión:
+ * - Ajusta las paletas en `Color.kt` y tipografías en `Type.kt`.
+ * - Si agregas shapes, incorpora un `shapes = ...` en `MaterialTheme`.
+ */
 private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
     secondary = PurpleGrey80,

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Stitch Design</title>
+<link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect"/>
+<link as="style" href="https://fonts.googleapis.com/css2?display=swap&amp;family=Epilogue%3Awght%40400%3B500%3B700%3B900&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900" onload="this.rel='stylesheet'" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#f04299",
+                        "background-light": "#f8f6f7",
+                        "background-dark": "#221019",
+                        "foreground-light": "#181114",
+                        "foreground-dark": "#F5F0F2",
+                        "subtle-light": "#896175",
+                        "subtle-dark": "#A88E9C",
+                        "border-light": "#e6dbe0",
+                        "border-dark": "#3B2C33"
+                    },
+                    fontFamily: {
+                        "display": ["Epilogue"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .custom-checkbox:checked {
+            background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/%3e%3c/svg%3e");
+        }
+    </style>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-foreground-light dark:text-foreground-dark">
+<div class="flex flex-col min-h-screen">
+<header class="sticky top-0 z-10 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-sm p-4">
+<div class="flex items-center">
+<button class="text-foreground-light dark:text-foreground-dark">
+<span class="material-symbols-outlined">arrow_back_ios_new</span>
+</button>
+<h1 class="flex-1 text-center text-lg font-bold">Detalles de la cita</h1>
+<div class="w-8"></div>
+</div>
+</header>
+<main class="flex-1 overflow-y-auto px-4 pt-6 pb-24">
+<div class="space-y-6">
+<div>
+<h2 class="text-xl font-bold mb-4">Detalles</h2>
+<div class="bg-background-light dark:bg-background-dark/50 rounded-lg p-4 space-y-4 border border-border-light dark:border-border-dark">
+<div class="flex items-start">
+<span class="material-symbols-outlined text-subtle-light dark:text-subtle-dark mt-1 mr-4">calendar_month</span>
+<div>
+<p class="font-medium">10:00 AM</p>
+<p class="text-sm text-subtle-light dark:text-subtle-dark">15 de mayo, 2024</p>
+</div>
+</div>
+<div class="flex items-start">
+<span class="material-symbols-outlined text-subtle-light dark:text-subtle-dark mt-1 mr-4">cut</span>
+<div>
+<p class="font-medium">Servicio</p>
+<p class="text-sm text-subtle-light dark:text-subtle-dark">Corte de cabello</p>
+</div>
+</div>
+<div class="flex items-start">
+<span class="material-symbols-outlined text-subtle-light dark:text-subtle-dark mt-1 mr-4">person</span>
+<div>
+<p class="font-medium">Cliente</p>
+<p class="text-sm text-subtle-light dark:text-subtle-dark">Isabella Rodriguez</p>
+</div>
+</div>
+</div>
+</div>
+<div>
+<h2 class="text-xl font-bold mb-4">Servicios a facturar</h2>
+<div class="bg-background-light dark:bg-background-dark/50 rounded-lg divide-y divide-border-light dark:divide-border-dark border border-border-light dark:border-border-dark">
+<label class="flex items-center justify-between p-4 cursor-pointer">
+<span class="font-medium">Corte de cabello</span>
+<input checked="" class="custom-checkbox h-6 w-6 rounded border-2 border-border-light dark:border-border-dark bg-transparent text-primary checked:bg-primary checked:border-primary focus:ring-0 focus:ring-offset-0" type="checkbox"/>
+</label>
+<label class="flex items-center justify-between p-4 cursor-pointer">
+<span class="font-medium">Peinado</span>
+<input class="custom-checkbox h-6 w-6 rounded border-2 border-border-light dark:border-border-dark bg-transparent text-primary checked:bg-primary checked:border-primary focus:ring-0 focus:ring-offset-0" type="checkbox"/>
+</label>
+</div>
+</div>
+</div>
+</main>
+<footer class="fixed bottom-0 left-0 right-0 bg-background-light dark:bg-background-dark border-t border-border-light dark:border-border-dark">
+<div class="px-4 pt-3 pb-4">
+<button class="w-full h-12 px-5 bg-primary text-white text-base font-bold rounded-xl flex items-center justify-center">
+<span>Generar factura</span>
+</button>
+</div>
+<nav class="flex justify-around pb-3 pt-1">
+<a class="flex flex-col items-center gap-1 text-subtle-light dark:text-subtle-dark" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="text-xs font-medium">Inicio</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-subtle-light dark:text-subtle-dark" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="text-xs font-medium">Clientes</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-subtle-light dark:text-subtle-dark" href="#">
+<span class="material-symbols-outlined">content_cut</span>
+<span class="text-xs font-medium">Servicios</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-primary" href="#">
+<div class="bg-primary/20 dark:bg-primary/30 rounded-full p-2">
+<span class="material-symbols-outlined !text-primary">calendar_today</span>
+</div>
+<span class="text-xs font-bold">Citas</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-subtle-light dark:text-subtle-dark" href="#">
+<span class="material-symbols-outlined">receipt_long</span>
+<span class="text-xs font-medium">Facturación</span>
+</a>
+</nav>
+</footer>
+</div>
+
+</body></html>

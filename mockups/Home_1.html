@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Belinda Studio</title>
+<link href="data:image/x-icon;base64," rel="icon" type="image/x-icon"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#f04299",
+                        "background-light": "#f8f6f7",
+                        "background-dark": "#221019",
+                        "foreground-light": "#181114",
+                        "foreground-dark": "#F3E9ED",
+                        "subtle-light": "#896175",
+                        "subtle-dark": "#A68999",
+                        "border-light": "#E6DBE0",
+                        "border-dark": "#432E38",
+                    },
+                    fontFamily: {
+                        "display": ["Epilogue", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-display bg-background-light dark:bg-background-dark">
+<div class="relative flex h-auto min-h-screen w-full flex-col justify-between overflow-x-hidden">
+<div class="flex-grow">
+<header class="sticky top-0 z-10 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-sm">
+<div class="flex items-center justify-between p-4">
+<div class="w-12"></div>
+<h1 class="text-lg font-bold text-foreground-light dark:text-foreground-dark">Belinda Studio</h1>
+<div class="w-12 flex justify-end">
+<button class="p-2 rounded-full text-foreground-light dark:text-foreground-dark hover:bg-primary/10">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+</div>
+</div>
+</header>
+<main class="p-4">
+<section class="mb-6">
+<h2 class="text-2xl font-bold text-foreground-light dark:text-foreground-dark">Hola, Belinda</h2>
+</section>
+<section class="mb-8">
+<h3 class="text-lg font-bold mb-4 text-foreground-light dark:text-foreground-dark">Próximas Citas</h3>
+<div class="space-y-3">
+<div class="flex items-center gap-4 p-3 rounded-lg bg-background-light dark:bg-background-dark border border-border-light dark:border-border-dark cursor-pointer transition-colors hover:bg-primary/5">
+<img alt="Avatar Cliente X" class="h-12 w-12 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDVd2nzpJhbgUqcmwULkheZAMeQUF5U8wbGnQKR9ceK5OTTLr-YBIE_w3rHHJYnjYY0PProENNen1D1h7ulWOehz5uWHyKmN7T0ZlvgiktlXb8Zl8KhL42gIfLLzyLW0fZRWPY3uRoHjDw7CyBksYqeT_Ljan4Z7jO0dQudMHEETsbzEbGnOMUeZcdUe3wlbq13uAjKJalwiNsMHI097mYXqM7mAGM_C44JrpaUZeq04lLy2bnn7O--UBPSmoJAJe9Yq31ADM5COpvp"/>
+<div class="flex-1">
+<p class="font-semibold text-foreground-light dark:text-foreground-dark">Cliente X</p>
+<p class="text-sm text-subtle-light dark:text-subtle-dark">Corte + Secado • 10:00 AM</p>
+</div>
+<span class="material-symbols-outlined text-subtle-light dark:text-subtle-dark">chevron_right</span>
+</div>
+<div class="flex items-center gap-4 p-3 rounded-lg bg-background-light dark:bg-background-dark border border-border-light dark:border-border-dark cursor-pointer transition-colors hover:bg-primary/5">
+<img alt="Avatar Cliente Y" class="h-12 w-12 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDweALlkKEaqNPUmf5MrWBAo_9hrbcVeFzhwDb23G-clGevOCIR8nDAYlmf_j6GSOX4CzZ3eWxeANk25r21-n8fgOvpIuNq8oUrTPjEvNKNPLJuOdPI1LhfKyVbvhMI5XqJnOJZjg7FWTxGjJc86gA74JqObutYpBrgDlKHB0aN4-it8UxPOk_wafwvU-qp-cexnSrYOdlGjK7rad3PT5GbUTn4y8YcZM9YK6IiwRrX_pmktUXYNDrP8GOKHaaZUYH6ZDDfIYPqfjfg"/>
+<div class="flex-1">
+<p class="font-semibold text-foreground-light dark:text-foreground-dark">Cliente Y</p>
+<p class="text-sm text-subtle-light dark:text-subtle-dark">Coloración • 11:30 AM</p>
+</div>
+<span class="material-symbols-outlined text-subtle-light dark:text-subtle-dark">chevron_right</span>
+</div>
+</div>
+</section>
+<section>
+<h3 class="text-lg font-bold mb-4 text-foreground-light dark:text-foreground-dark">KPIs Rápidos</h3>
+<div class="grid grid-cols-2 gap-4">
+<div class="flex flex-col gap-1 rounded-xl p-4 bg-background-light dark:bg-background-dark border border-border-light dark:border-border-dark cursor-pointer">
+<p class="text-sm font-medium text-subtle-light dark:text-subtle-dark">Ingresos hoy</p>
+<p class="text-2xl font-bold text-foreground-light dark:text-foreground-dark">$120.000</p>
+</div>
+<div class="flex flex-col gap-1 rounded-xl p-4 bg-background-light dark:bg-background-dark border border-border-light dark:border-border-dark cursor-pointer">
+<p class="text-sm font-medium text-subtle-light dark:text-subtle-dark">Citas hoy</p>
+<p class="text-2xl font-bold text-foreground-light dark:text-foreground-dark">2/5</p>
+</div>
+</div>
+</section>
+</main>
+</div>
+<div class="sticky bottom-0">
+<div class="flex justify-end p-4">
+<button class="flex items-center justify-center gap-2 h-14 px-6 bg-primary text-white rounded-full shadow-lg hover:bg-primary/90 transition-colors">
+<span class="material-symbols-outlined">add</span>
+<span class="font-bold">Agendar Cita</span>
+</button>
+</div>
+<nav class="flex justify-around bg-background-light dark:bg-background-dark border-t border-border-light dark:border-border-dark py-2 px-2 pb-5">
+<a class="flex flex-col items-center justify-end gap-1 p-2 rounded-lg text-primary" href="#">
+<span class="material-symbols-outlined">home</span>
+<p class="text-xs font-medium">Dashboard</p>
+</a>
+<a class="flex flex-col items-center justify-end gap-1 p-2 rounded-lg text-subtle-light dark:text-subtle-dark hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">group</span>
+<p class="text-xs font-medium">Clientes</p>
+</a>
+<a class="flex flex-col items-center justify-end gap-1 p-2 rounded-lg text-subtle-light dark:text-subtle-dark hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">content_cut</span>
+<p class="text-xs font-medium">Servicios</p>
+</a>
+<a class="flex flex-col items-center justify-end gap-1 p-2 rounded-lg text-subtle-light dark:text-subtle-dark hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">calendar_month</span>
+<p class="text-xs font-medium">Calendario</p>
+</a>
+<a class="flex flex-col items-center justify-end gap-1 p-2 rounded-lg text-subtle-light dark:text-subtle-dark hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">bar_chart</span>
+<p class="text-xs font-medium">Reportes</p>
+</a>
+</nav>
+</div>
+</div>
+
+</body></html>

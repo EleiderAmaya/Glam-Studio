@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Belinda Studio - Nuevo Servicio</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#f04299",
+                        "background-light": "#f8f6f7",
+                        "background-dark": "#221019",
+                        "foreground-light": "#181114",
+                        "foreground-dark": "#f8f6f7",
+                        "subtle-light": "#896175",
+                        "subtle-dark": "#a18c96",
+                        "input-light": "#f4f0f2",
+                        "input-dark": "#3a2330",
+                    },
+                    fontFamily: {
+                        "display": ["Epilogue", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-foreground-light dark:text-foreground-dark">
+<div class="flex flex-col h-screen justify-between">
+<main class="flex-grow overflow-y-auto">
+<header class="sticky top-0 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-sm z-10">
+<div class="flex items-center p-4">
+<button class="text-foreground-light dark:text-foreground-dark">
+<span class="material-symbols-outlined">close</span>
+</button>
+<h1 class="text-lg font-bold text-center flex-1 pr-8">Nuevo Servicio</h1>
+</div>
+</header>
+<div class="p-4 space-y-6">
+<form class="space-y-4">
+<div>
+<label class="sr-only" for="service-name">Nombre del Servicio</label>
+<input class="w-full bg-input-light dark:bg-input-dark border-none rounded-lg h-14 px-4 placeholder:text-subtle-light dark:placeholder:text-subtle-dark focus:ring-2 focus:ring-primary" id="service-name" placeholder="Nombre del Servicio" type="text"/>
+</div>
+<div>
+<label class="sr-only" for="duration">Duración (minutos)</label>
+<input class="w-full bg-input-light dark:bg-input-dark border-none rounded-lg h-14 px-4 placeholder:text-subtle-light dark:placeholder:text-subtle-dark focus:ring-2 focus:ring-primary" id="duration" placeholder="Duración (minutos)" type="number"/>
+</div>
+<div>
+<label class="sr-only" for="price">Precio (COP)</label>
+<input class="w-full bg-input-light dark:bg-input-dark border-none rounded-lg h-14 px-4 placeholder:text-subtle-light dark:placeholder:text-subtle-dark focus:ring-2 focus:ring-primary" id="price" placeholder="Precio (COP)" type="number"/>
+</div>
+</form>
+<div>
+<h2 class="text-lg font-bold mb-2">Variantes</h2>
+<button class="flex items-center justify-between w-full p-4 bg-background-light dark:bg-background-dark rounded-lg shadow-sm">
+<div>
+<p class="font-medium text-foreground-light dark:text-foreground-dark">Largo de cabello</p>
+<p class="text-sm text-subtle-light dark:text-subtle-dark">Corto, Medio, Largo</p>
+</div>
+<span class="material-symbols-outlined text-subtle-light dark:text-subtle-dark">arrow_forward_ios</span>
+</button>
+<button class="w-full mt-2 text-primary font-bold py-2 rounded-lg hover:bg-primary/10">Añadir Variante</button>
+</div>
+<div>
+<h2 class="text-lg font-bold mb-2">Recargos</h2>
+<div class="space-y-2">
+<div class="flex items-center justify-between p-4 bg-background-light dark:bg-background-dark rounded-lg shadow-sm">
+<span class="flex-1">Recargo festivo (+15%)</span>
+<label class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-input-light dark:bg-input-dark rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary"></div>
+</label>
+</div>
+<div class="flex items-center justify-between p-4 bg-background-light dark:bg-background-dark rounded-lg shadow-sm">
+<span class="flex-1">Recargo por producto especial</span>
+<label class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-input-light dark:bg-input-dark rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary"></div>
+</label>
+</div>
+</div>
+<button class="w-full mt-2 text-primary font-bold py-2 rounded-lg hover:bg-primary/10">Añadir Recargo</button>
+</div>
+</div>
+</main>
+<footer class="p-4 bg-background-light dark:bg-background-dark border-t border-input-light dark:border-input-dark">
+<div class="flex gap-4">
+<button class="flex-1 py-3 px-4 rounded-lg bg-input-light dark:bg-input-dark text-foreground-light dark:text-foreground-dark font-bold text-center">Eliminar</button>
+<button class="flex-1 py-3 px-4 rounded-lg bg-primary text-white font-bold text-center">Guardar</button>
+</div>
+</footer>
+</div>
+
+</body></html>

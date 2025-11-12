@@ -79,9 +79,17 @@ dependencies {
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3") // Se usa Material3 en lugar de `libs.material`
+    // Iconos Material (Outlined/Filled)
+    implementation("androidx.compose.material:material-icons-extended")
 
     // Dependencias de ciclo de vida (comunes en apps de Compose)
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.0")
+
+    // Navegación con Compose
+    implementation("androidx.navigation:navigation-compose:2.7.7")
+
+    // (Opcional) Google Fonts en tiempo de ejecución para tipografías como Epilogue
+    // implementation("androidx.compose.ui:ui-text-google-fonts")
 
     // --- FIN DE DEPENDENCIAS DE COMPOSE ---
 
