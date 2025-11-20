@@ -61,8 +61,9 @@ enum class Ocupacion { LIBRE, MEDIO, COMPLETO }
 fun CalendarScreen(onGenerateInvoice: () -> Unit, onAppointmentClick: () -> Unit = {}) {
     /* esta variable que guarda el estado de la fecha actual seleccionada */
     var currentDisplayedDate by remember { mutableStateOf(LocalDate.now()) }
-    // Demo: 31 días, con algunos ocupados/medios
-    val dias = (1..31).toList()
+    val daysInMonth = currentDisplayedDate.lengthOfMonth()
+    val dias = (1..daysInMonth).toList()
+    // Se redibujará correctamente cada vez que cambies de mes.
     val ocupacionDemo = remember {
         mapOf(
             5 to Ocupacion.COMPLETO,
