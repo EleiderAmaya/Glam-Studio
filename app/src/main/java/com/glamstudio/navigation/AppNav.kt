@@ -23,6 +23,7 @@ package com.glamstudio.navigation
  * - Usa callbacks en las pantallas (lambdas) y resuelve la navegación aquí.
  * - Rutas cortas y consistentes. Para parámetros: define `clients/detail/{id}` y args en el `NavHost`.
  */
+import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.ContentCut
@@ -46,12 +47,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.foundation.layout.padding
+import androidx.navigation.NamedNavArgument
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.glamstudio.ui.screens.CalendarScreen
 import com.glamstudio.ui.screens.ClientsScreen
 import com.glamstudio.ui.screens.HomeScreen
@@ -63,6 +68,8 @@ import com.glamstudio.ui.screens.ReportsScreen
 import com.glamstudio.ui.screens.ClientDetailScreen
 import com.glamstudio.ui.screens.ServiceDetailScreen
 import com.glamstudio.ui.screens.AppointmentDetailScreen
+import com.glamstudio.ui.screens.ScheduleAppointmentScreen
+import java.time.LocalDate
 
 /**
  * Rutas tipadas de la app.
@@ -88,6 +95,9 @@ sealed class Route(val path: String) {
     data object ClientDetail : Route("clients/detail")
     data object ServiceDetail : Route("services/detail")
     data object AppointmentDetail : Route("appointments/detail")
+    object ScheduleAppointmentScreen : Route("schedule/{date}") {
+        fun createRoute(date: LocalDate) = "schedule/${date.toString()}"
+    }
 }
 
 /**
@@ -188,10 +198,12 @@ fun AppRoot() {
             }
             composable(Route.Calendar.path) {
                 CalendarScreen(
+                    onDaySelected = { date -> navController.navigate(Route.ScheduleAppointmentScreen.createRoute(date)) },
                     onGenerateInvoice = { navController.navigate(Route.Invoice.path) },
                     onAppointmentClick = { navController.navigate(Route.AppointmentDetail.path) }
                 )
             }
+            
             composable(Route.Billing.path) { InvoiceScreen(showBack = false, onViewReports = { navController.navigate(Route.Reports.path) }) }
             composable(Route.Reports.path) { ReportsScreen(onBack = { navController.popBackStack() }) }
 
@@ -202,8 +214,20 @@ fun AppRoot() {
             composable(Route.ClientDetail.path) { ClientDetailScreen(onSaved = { navController.popBackStack() }, onBack = { navController.popBackStack() }) }
             composable(Route.ServiceDetail.path) { ServiceDetailScreen(onSaved = { navController.popBackStack() }, onBack = { navController.popBackStack() }) }
             composable(Route.AppointmentDetail.path) { AppointmentDetailScreen(onBack = { navController.popBackStack() }) }
+
+            composable(
+                route = Route.ScheduleAppointmentScreen.path,
+                arguments = listOf(navArgument("date") { type = NavType.StringType })
+            ) { backStackEntry ->
+                val dateString = backStackEntry.arguments?.getString("date")
+                if (dateString != null) {
+                    val selectedDate = LocalDate.parse(dateString)
+                    ScheduleAppointmentScreen(
+                        date = selectedDate,
+                        onBack = { navController.popBackStack() }
+                    )
+                }
+            }
         }
     }
 }
-
-

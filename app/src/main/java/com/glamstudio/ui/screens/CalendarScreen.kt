@@ -58,7 +58,7 @@ enum class Ocupacion { LIBRE, MEDIO, COMPLETO }
  */
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun CalendarScreen(onGenerateInvoice: () -> Unit, onAppointmentClick: () -> Unit = {}) {
+fun CalendarScreen(onDaySelected: (date: LocalDate) -> Unit, onGenerateInvoice: () -> Unit, onAppointmentClick: () -> Unit = {}) {
     /* esta variable que guarda el estado de la fecha actual seleccionada */
     var currentDisplayedDate by remember { mutableStateOf(LocalDate.now()) }
     val daysInMonth = currentDisplayedDate.lengthOfMonth()
@@ -129,8 +129,8 @@ fun CalendarScreen(onGenerateInvoice: () -> Unit, onAppointmentClick: () -> Unit
                     val fila = index / 7
                     val seleccionado = fila == semanaSeleccionada.value
                     DiaCell(dia = dia, ocupacion = ocupacionDemo[dia], seleccionado = seleccionado) {
-                        // Al pulsar un día, mover la selección a su semana
-                        semanaSeleccionada.value = index / 7
+                        val selectedDate = LocalDate.of(currentDisplayedDate.year, currentDisplayedDate.month, dia)
+                        onDaySelected(selectedDate)
                     }
                 }
             }
