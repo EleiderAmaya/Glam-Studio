@@ -1,5 +1,7 @@
 package com.glamstudio.ui.screens
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -19,19 +21,29 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBackIos
+import androidx.compose.material.icons.filled.ArrowBackIos
+import androidx.compose.material.icons.filled.ArrowForwardIos
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.glamstudio.ui.theme.Primary
+import java.time.LocalDate
 
 enum class Ocupacion { LIBRE, MEDIO, COMPLETO }
 
@@ -47,8 +59,11 @@ enum class Ocupacion { LIBRE, MEDIO, COMPLETO }
  * - Para parámetros (mes/año), expón `@Composable fun CalendarScreen(year: Int, month: Int, ...)`.
  * - Para disponibilidad por día, mapea `Ocupacion` según tus reglas de negocio.
  */
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun CalendarScreen(onGenerateInvoice: () -> Unit, onAppointmentClick: () -> Unit = {}) {
+    /* esta variable que guarda el estado de la fecha actual seleccionada */
+    var currentDisplayedDate by remember { mutableStateOf(LocalDate.now()) }
     // Demo: 31 días, con algunos ocupados/medios
     val dias = (1..31).toList()
     val ocupacionDemo = remember {
@@ -64,13 +79,28 @@ fun CalendarScreen(onGenerateInvoice: () -> Unit, onAppointmentClick: () -> Unit
     }
     val semanaSeleccionada = remember { mutableStateOf(2) } // 0-index, resalta una semana de ejemplo
 
-    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
+    Column(modifier = Modifier
+        .fillMaxSize()
+        .padding(16.dp)) {
+        Row(verticalAlignment = Alignment.CenterVertically/*, modifier = Modifier.fillMaxWidth()*/) {
+            IconButton(onClick = {
+                // La lógica para cambiar de mes hacia atras.
+                currentDisplayedDate = currentDisplayedDate.minusMonths(1)
+            }) {
+                Icon(Icons.Default.ArrowBackIos, contentDescription = "Mes anterior")
+            }
             Text(
-                text = "Mayo 2024",
-                style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
-                modifier = Modifier.weight(1f)
+                text = "${currentDisplayedDate.month.name} ${currentDisplayedDate.year}",
+                modifier = Modifier.weight(1f),
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
             )
+            IconButton(onClick = {
+                // La lógica para cambiar de mes hacia adelante.
+                currentDisplayedDate = currentDisplayedDate.plusMonths(1)
+            }) {
+                Icon(Icons.Default.ArrowForwardIos, contentDescription = "Mes siguiente")
+            }
         }
         Spacer(modifier = Modifier.height(8.dp))
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
@@ -89,7 +119,9 @@ fun CalendarScreen(onGenerateInvoice: () -> Unit, onAppointmentClick: () -> Unit
             contentPadding = PaddingValues(4.dp),
             horizontalArrangement = Arrangement.spacedBy(4.dp),
             verticalArrangement = Arrangement.spacedBy(4.dp),
-            modifier = Modifier.fillMaxWidth().weight(1f)
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
         ) {
             items(celdas.size) { index ->
                 if (index < leadingEmpty) {
@@ -111,7 +143,9 @@ fun CalendarScreen(onGenerateInvoice: () -> Unit, onAppointmentClick: () -> Unit
         Text("Citas de hoy", style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold))
         Spacer(modifier = Modifier.height(8.dp))
         Surface(shape = RoundedCornerShape(12.dp), border = BorderStroke(1.dp, Color(0xFFE6DBE0))) {
-            Column(modifier = Modifier.fillMaxWidth().padding(12.dp)) {
+            Column(modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp)) {
                 Text("10:00 AM – Corte de cabello • Cliente X", modifier = Modifier.clickable { onAppointmentClick() })
                 Text("13:00 PM – Manicura • Cliente Y", modifier = Modifier.clickable { onAppointmentClick() })
             }
@@ -149,7 +183,10 @@ private fun DiaCell(
             modifier = Modifier
                 .height(44.dp)
                 .fillMaxWidth()
-                .background(color.copy(alpha = if (color == Color.Transparent) 0f else 0.15f), CircleShape) // Indicador de ocupación
+                .background(
+                    color.copy(alpha = if (color == Color.Transparent) 0f else 0.15f),
+                    CircleShape
+                ) // Indicador de ocupación
         ) {
             if (dia > 0) {
                 Text(text = dia.toString(), style = MaterialTheme.typography.bodyMedium)
