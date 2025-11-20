@@ -12,18 +12,15 @@ import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
 /**
@@ -47,7 +44,6 @@ fun NewClientScreen(onSaved: () -> Unit, onBack: () -> Unit = {}) {
     val direccion = remember { mutableStateOf("") }
     val barrio = remember { mutableStateOf("") }
     val notas = remember { mutableStateOf("") }
-    val activo = remember { mutableStateOf(true) }
     Scaffold(
         topBar = {
             TopAppBar(
@@ -66,17 +62,9 @@ fun NewClientScreen(onSaved: () -> Unit, onBack: () -> Unit = {}) {
             OutlinedTextField(value = barrio.value, onValueChange = { barrio.value = it }, label = { Text("Barrio (opcional)") }, modifier = Modifier.fillMaxWidth())
             OutlinedTextField(value = notas.value, onValueChange = { notas.value = it }, label = { Text("Notas") }, modifier = Modifier.fillMaxWidth())
 
-            Spacer(modifier = Modifier.height(8.dp))
-            Row(modifier = Modifier.fillMaxWidth()) {
-                Text("Estado: Activo", modifier = Modifier.weight(1f))
-                Switch(checked = activo.value, onCheckedChange = { activo.value = it })
-            }
-
             Spacer(modifier = Modifier.height(16.dp))
             Row(modifier = Modifier.fillMaxWidth()) {
-                Button(onClick = { /* eliminar */ }, modifier = Modifier.weight(1f)) { Text("Eliminar") }
-                Spacer(modifier = Modifier.height(0.dp).weight(0.1f))
-                Button(onClick = onSaved, modifier = Modifier.weight(1f)) { Text("Guardar") }
+                Button(onClick = onSaved, modifier = Modifier.weight(1f).padding(horizontal = 30.dp)) { Text("Guardar") }
             }
         }
     }

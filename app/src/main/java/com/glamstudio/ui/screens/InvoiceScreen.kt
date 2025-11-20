@@ -50,7 +50,7 @@ fun InvoiceScreen(showBack: Boolean = false, onBack: () -> Unit = {}, onViewRepo
         topBar = {
             if (showBack) {
                 TopAppBar(
-                    title = { Text("Facturación") },
+                    title = { Text("Facturas") },
                     navigationIcon = {
                         IconButton(onClick = onBack) {
                         Icon(imageVector = Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = "Atrás")

@@ -10,49 +10,42 @@ import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
-/**
- * Sistema de tema de la app.
- *
- * Uso:
- * - Envuelve todo en `GlamStudioTheme { ... }` (ya se hace en `MainActivity`).
- * - Controla modo oscuro con `darkTheme` o deja que use el sistema.
- * - `dynamicColor` usa Material You en Android 12+.
- *
- * Extensión:
- * - Ajusta las paletas en `Color.kt` y tipografías en `Type.kt`.
- * - Si agregas shapes, incorpora un `shapes = ...` en `MaterialTheme`.
- */
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
+    primary = Primary,
+    secondary = Secondary,
+    tertiary = Tertiary,
+    background = ContentLight, // Usamos el color de contenido claro como fondo oscuro
+    surface = ContentLight,
+    onPrimary = ContentLight, // El texto sobre el primario será oscuro
+    onSecondary = Color.White,
+    onTertiary = Color.White,
+    onBackground = BackgroundLight, // El texto sobre el fondo será claro
+    onSurface = BackgroundLight
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
-
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
-    onPrimary = Color.White,
+    primary = Primary,
+    secondary = Secondary,
+    tertiary = Tertiary,
+    background = BackgroundLight,
+    surface = SurfaceLight,
+    onPrimary = Color.White, // El texto sobre el primario será blanco
     onSecondary = Color.White,
     onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-    */
+    onBackground = ContentLight, // El texto sobre el fondo será oscuro
+    onSurface = ContentLight
 )
 
 @Composable
 fun GlamStudioTheme(darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colorScheme =
@@ -70,7 +63,7 @@ fun GlamStudioTheme(darkTheme: Boolean = isSystemInDarkTheme(),
         SideEffect {
             val window = (view.context as Activity).window
             window.statusBarColor = colorScheme.primary.toArgb()
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
+            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
         }
     }
 

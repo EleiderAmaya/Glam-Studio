@@ -109,7 +109,7 @@ private val bottomItems = listOf(
     BottomItem(Route.Clients, "Clientes", Icons.Filled.Group, Icons.Outlined.Group),
     BottomItem(Route.Services, "Servicios", Icons.Filled.ContentCut, Icons.Outlined.ContentCut),
     BottomItem(Route.Calendar, "Calendario", Icons.Filled.CalendarMonth, Icons.Outlined.CalendarMonth),
-    BottomItem(Route.Billing, "Facturación", Icons.AutoMirrored.Filled.ReceiptLong, Icons.AutoMirrored.Outlined.ReceiptLong),
+    BottomItem(Route.Billing, "Facturas", Icons.AutoMirrored.Filled.ReceiptLong, Icons.AutoMirrored.Outlined.ReceiptLong),
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -199,7 +199,7 @@ fun AppRoot() {
             composable(Route.NewClient.path) { NewClientScreen(onSaved = { navController.popBackStack() }, onBack = { navController.popBackStack() }) }
             composable(Route.NewService.path) { NewServiceScreen(onSaved = { navController.popBackStack() }, onBack = { navController.popBackStack() }) }
             composable(Route.Invoice.path) { InvoiceScreen(showBack = true, onBack = { navController.popBackStack() }, onViewReports = { navController.navigate(Route.Reports.path) }) }
-            composable(Route.ClientDetail.path) { ClientDetailScreen(onBack = { navController.popBackStack() }) }
+            composable(Route.ClientDetail.path) { ClientDetailScreen(onSaved = { navController.popBackStack() }, onBack = { navController.popBackStack() }) }
             composable(Route.ServiceDetail.path) { ServiceDetailScreen(onBack = { navController.popBackStack() }) }
             composable(Route.AppointmentDetail.path) { AppointmentDetailScreen(onBack = { navController.popBackStack() }) }
         }
