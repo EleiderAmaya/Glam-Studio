@@ -200,7 +200,7 @@ fun AppRoot() {
             composable(Route.NewService.path) { NewServiceScreen(onSaved = { navController.popBackStack() }, onBack = { navController.popBackStack() }) }
             composable(Route.Invoice.path) { InvoiceScreen(showBack = true, onBack = { navController.popBackStack() }, onViewReports = { navController.navigate(Route.Reports.path) }) }
             composable(Route.ClientDetail.path) { ClientDetailScreen(onSaved = { navController.popBackStack() }, onBack = { navController.popBackStack() }) }
-            composable(Route.ServiceDetail.path) { ServiceDetailScreen(onBack = { navController.popBackStack() }) }
+            composable(Route.ServiceDetail.path) { ServiceDetailScreen(onSaved = { navController.popBackStack() }, onBack = { navController.popBackStack() }) }
             composable(Route.AppointmentDetail.path) { AppointmentDetailScreen(onBack = { navController.popBackStack() }) }
         }
     }
