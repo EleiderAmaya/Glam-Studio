@@ -21,19 +21,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.glamstudio.ui.viewmodel.NewServiceViewModel
 
 /**
  * Formulario de creación/edición de servicio.
- *
- * Reutilización:
- * - Si compartes este formulario para editar, inicializa `nombre/duracion/precio` con valores del servicio.
- * - Para validaciones, usa `isError` y `supportingText` en `OutlinedTextField`.
- * - `onSaved` debe persistir (ViewModel) y luego navegar hacia atrás o a detalle.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NewServiceScreen(onSaved: () -> Unit, onBack: () -> Unit = {}) {
+    val context = LocalContext.current
+    val vm: NewServiceViewModel = viewModel(factory = NewServiceViewModel.factory(context))
+
     val nombre = remember { mutableStateOf("") }
     val descripcion = remember { mutableStateOf("") }
     val duracion = remember { mutableStateOf("") }
@@ -57,7 +58,15 @@ fun NewServiceScreen(onSaved: () -> Unit, onBack: () -> Unit = {}) {
 
             Spacer(modifier = Modifier.height(16.dp))
             Row(modifier = Modifier.fillMaxWidth()) {
-                Button(onClick = onSaved, modifier = Modifier.weight(1f).padding(horizontal = 30.dp)) { Text("Guardar") }
+                Button(onClick = {
+                    vm.save(
+                        name = nombre.value,
+                        description = descripcion.value,
+                        durationMinutes = duracion.value.toIntOrNull() ?: 0,
+                        priceInput = precio.value
+                    )
+                    onSaved()
+                }, modifier = Modifier.weight(1f).padding(horizontal = 30.dp)) { Text("Guardar") }
             }
         }
     }

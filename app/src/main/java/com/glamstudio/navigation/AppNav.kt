@@ -92,9 +92,15 @@ sealed class Route(val path: String) {
     data object NewClient : Route("clients/new")
     data object NewService : Route("services/new")
     data object Invoice : Route("billing/invoice")
-    data object ClientDetail : Route("clients/detail")
-    data object ServiceDetail : Route("services/detail")
-    data object AppointmentDetail : Route("appointments/detail")
+    data object ClientDetail : Route("clients/detail/{id}") {
+        fun create(id: String) = "clients/detail/$id"
+    }
+    data object ServiceDetail : Route("services/detail/{id}") {
+        fun create(id: String) = "services/detail/$id"
+    }
+    data object AppointmentDetail : Route("appointments/detail/{id}") {
+        fun create(id: String) = "appointments/detail/$id"
+    }
     object ScheduleAppointmentScreen : Route("schedule/{date}") {
         fun createRoute(date: LocalDate) = "schedule/${date.toString()}"
     }
@@ -152,7 +158,7 @@ fun AppRoot() {
                             val popped = navController.popBackStack(item.route.path, false)
                             if (!popped) {
                                 navController.navigate(item.route.path) {
-                                    popUpTo(navController.graph.findStartDestination().id) { saveState = true }
+                                    popUpTo(navController.graph.startDestinationId) { saveState = true }
                                     launchSingleTop = true
                                     restoreState = true
                                 }
@@ -181,26 +187,26 @@ fun AppRoot() {
                 HomeScreen(
                     onFabClick = { navController.navigate(Route.Calendar.path) },
                     onReportsClick = { navController.navigate(Route.Reports.path) },
-                    onAppointmentClick = { navController.navigate(Route.AppointmentDetail.path) }
+                    onAppointmentClick = { id -> navController.navigate(Route.AppointmentDetail.create(id)) }
                 )
             }
             composable(Route.Clients.path) {
                 ClientsScreen(
                     onAddClick = { navController.navigate(Route.NewClient.path) },
-                    onItemClick = { navController.navigate(Route.ClientDetail.path) }
+                    onItemClick = { client -> navController.navigate(Route.ClientDetail.create(client.id)) }
                 )
             }
             composable(Route.Services.path) {
                 ServicesScreen(
                     onAddClick = { navController.navigate(Route.NewService.path) },
-                    onItemClick = { navController.navigate(Route.ServiceDetail.path) }
+                    onItemClick = { service -> navController.navigate(Route.ServiceDetail.create(service.id)) }
                 )
             }
             composable(Route.Calendar.path) {
                 CalendarScreen(
                     onDaySelected = { date -> navController.navigate(Route.ScheduleAppointmentScreen.createRoute(date)) },
                     onGenerateInvoice = { navController.navigate(Route.Invoice.path) },
-                    onAppointmentClick = { navController.navigate(Route.AppointmentDetail.path) }
+                    onAppointmentClick = { id -> navController.navigate(Route.AppointmentDetail.create(id)) }
                 )
             }
             
@@ -211,9 +217,19 @@ fun AppRoot() {
             composable(Route.NewClient.path) { NewClientScreen(onSaved = { navController.popBackStack() }, onBack = { navController.popBackStack() }) }
             composable(Route.NewService.path) { NewServiceScreen(onSaved = { navController.popBackStack() }, onBack = { navController.popBackStack() }) }
             composable(Route.Invoice.path) { InvoiceScreen(showBack = true, onBack = { navController.popBackStack() }, onViewReports = { navController.navigate(Route.Reports.path) }) }
-            composable(Route.ClientDetail.path) { ClientDetailScreen(onSaved = { navController.popBackStack() }, onBack = { navController.popBackStack() }) }
-            composable(Route.ServiceDetail.path) { ServiceDetailScreen(onSaved = { navController.popBackStack() }, onBack = { navController.popBackStack() }) }
-            composable(Route.AppointmentDetail.path) { AppointmentDetailScreen(onBack = { navController.popBackStack() }) }
+
+            composable(Route.ClientDetail.path, arguments = listOf(navArgument("id") { type = NavType.StringType })) { backStack ->
+                val id = backStack.arguments?.getString("id") ?: return@composable
+                ClientDetailScreen(onSaved = { navController.popBackStack() }, onBack = { navController.popBackStack() })
+            }
+            composable(Route.ServiceDetail.path, arguments = listOf(navArgument("id") { type = NavType.StringType })) { backStack ->
+                val id = backStack.arguments?.getString("id") ?: return@composable
+                ServiceDetailScreen(onSaved = { navController.popBackStack() }, onBack = { navController.popBackStack() })
+            }
+            composable(Route.AppointmentDetail.path, arguments = listOf(navArgument("id") { type = NavType.StringType })) { backStack ->
+                val id = backStack.arguments?.getString("id") ?: return@composable
+                AppointmentDetailScreen(onBack = { navController.popBackStack() })
+            }
 
             composable(
                 route = Route.ScheduleAppointmentScreen.path,
@@ -222,10 +238,7 @@ fun AppRoot() {
                 val dateString = backStackEntry.arguments?.getString("date")
                 if (dateString != null) {
                     val selectedDate = LocalDate.parse(dateString)
-                    ScheduleAppointmentScreen(
-                        date = selectedDate,
-                        onBack = { navController.popBackStack() }
-                    )
+                    ScheduleAppointmentScreen(date = selectedDate, onBack = { navController.popBackStack() })
                 }
             }
         }

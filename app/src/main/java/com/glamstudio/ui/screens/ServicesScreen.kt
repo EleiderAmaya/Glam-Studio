@@ -18,34 +18,40 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.glamstudio.data.entity.ServiceEntity
 import com.glamstudio.ui.theme.BorderLight
+import com.glamstudio.ui.viewmodel.ServicesViewModel
+import java.text.NumberFormat
+import java.util.Locale
 
-data class Servicio(val nombre: String, val duracion: String, val precio: String)
+private fun formatCop(priceCents: Long): String {
+    val pesos = priceCents / 100
+    val cents = (priceCents % 100).toInt()
+    val nf = NumberFormat.getNumberInstance(Locale("es", "CO"))
+    return "${nf.format(pesos)},${cents.toString().padStart(2, '0')} COP"
+}
 
 /**
- * Lista de servicios con búsqueda y acción de crear.
- *
- * Reutilización:
- * - Reemplaza `servicios` por estado proveniente de un ViewModel.
- * - Usa `onAddClick` para navegación a creación/edición.
- * - Emite `onItemClick(servicio)` para ir a detalle sin acoplar navegación a UI.
- * - Extrae la celda a `ServiceItem(...)` si se vuelve compleja.
+ * Lista de servicios respaldada por Room.
  */
 @Composable
-fun ServicesScreen(onAddClick: () -> Unit, onItemClick: (Servicio) -> Unit = {}) {
+fun ServicesScreen(onAddClick: () -> Unit, onItemClick: (ServiceEntity) -> Unit = {}) {
+    val context = LocalContext.current
+    val vm: ServicesViewModel = viewModel(factory = ServicesViewModel.factory(context))
+
     val query = remember { mutableStateOf("") }
-    val servicios = listOf(
-        Servicio("Corte + Secado", "45 min", "$35.000"),
-        Servicio("Coloración Raíz", "90 min", "$80.000"),
-        Servicio("Keratina", "180 min", "$250.000"),
-    )
+    val servicios by vm.services.collectAsState()
 
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -61,26 +67,29 @@ fun ServicesScreen(onAddClick: () -> Unit, onItemClick: (Servicio) -> Unit = {})
 
         OutlinedTextField(
             value = query.value,
-            onValueChange = { query.value = it },
+            onValueChange = {
+                query.value = it
+                vm.onQueryChange(it)
+            },
             modifier = Modifier.fillMaxWidth(),
             placeholder = { Text("Buscar servicio…") }
         )
         Spacer(modifier = Modifier.height(8.dp))
 
-        LazyColumn {
+        LazyColumn(verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(8.dp)) {
             items(servicios) { s ->
                 Surface(
                     border = BorderStroke(1.dp, BorderLight),
                     shape = RoundedCornerShape(12.dp),
-                    modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp),
+                    modifier = Modifier.fillMaxWidth(),
                     onClick = { onItemClick(s) }
                 ) {
                     Row(modifier = Modifier.fillMaxWidth().padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
                         Column(modifier = Modifier.weight(1f)) {
-                            Text(text = s.nombre, fontWeight = FontWeight.Medium)
-                            Text(text = s.duracion, style = MaterialTheme.typography.bodySmall)
+                            Text(text = s.name, fontWeight = FontWeight.Medium)
+                            Text(text = "${s.durationMinutes} min", style = MaterialTheme.typography.bodySmall)
                         }
-                        Text(text = s.precio, fontWeight = FontWeight.Medium)
+                        Text(text = formatCop(s.priceCents), fontWeight = FontWeight.Medium)
                     }
                 }
             }

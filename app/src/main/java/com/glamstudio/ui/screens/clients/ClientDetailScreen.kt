@@ -10,84 +10,61 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.glamstudio.ui.viewmodel.NewClientViewModel
 
 /**
- * Formulario de creación/edición de cliente.
+ * Detalle de cliente.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NewClientScreen(onSaved: () -> Unit, onBack: () -> Unit = {}) {
-    val context = LocalContext.current
-    val vm: NewClientViewModel = viewModel(factory = NewClientViewModel.factory(context))
-
+fun ClientDetailScreen(onSaved: () -> Unit, onBack: () -> Unit = {}) {
     val nombre = remember { mutableStateOf("") }
     val telefono = remember { mutableStateOf("") }
     val email = remember { mutableStateOf("") }
     val direccion = remember { mutableStateOf("") }
     val barrio = remember { mutableStateOf("") }
     val notas = remember { mutableStateOf("") }
-
-    val phoneIsValid = telefono.value.length in 7..12
-
+    val activo = remember { mutableStateOf(true) }
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Nuevo cliente") },
-                navigationIcon = {
-                    IconButton(onClick = onBack) { Icon(imageVector = Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = "Atrás") }
-                }
+                title = { Text("Detalle de cliente") },
+                navigationIcon = { IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = "Atrás") } }
             )
         }
     ) { paddingValues ->
         Column(modifier = Modifier.fillMaxSize().padding(paddingValues).padding(16.dp)) {
             OutlinedTextField(value = nombre.value, onValueChange = { nombre.value = it }, label = { Text("Nombre completo") }, modifier = Modifier.fillMaxWidth())
-            OutlinedTextField(
-                value = telefono.value,
-                onValueChange = { input -> telefono.value = input.filter { it.isDigit() } },
-                label = { Text("Teléfono") },
-                modifier = Modifier.fillMaxWidth(),
-                isError = telefono.value.isNotBlank() && !phoneIsValid,
-                supportingText = { if (telefono.value.isNotBlank() && !phoneIsValid) Text("7–12 dígitos, sin indicativo") },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-            )
+            OutlinedTextField(value = telefono.value, onValueChange = { telefono.value = it }, label = { Text("Teléfono") }, modifier = Modifier.fillMaxWidth())
             OutlinedTextField(value = email.value, onValueChange = { email.value = it }, label = { Text("Email (opcional)") }, modifier = Modifier.fillMaxWidth())
             OutlinedTextField(value = direccion.value, onValueChange = { direccion.value = it }, label = { Text("Dirección principal") }, modifier = Modifier.fillMaxWidth())
             OutlinedTextField(value = barrio.value, onValueChange = { barrio.value = it }, label = { Text("Barrio (opcional)") }, modifier = Modifier.fillMaxWidth())
             OutlinedTextField(value = notas.value, onValueChange = { notas.value = it }, label = { Text("Notas") }, modifier = Modifier.fillMaxWidth())
 
+            Spacer(modifier = Modifier.height(8.dp))
+            Row(modifier = Modifier.fillMaxWidth()) {
+                Text("Estado: Activo", modifier = Modifier.weight(1f))
+                Switch(checked = activo.value, onCheckedChange = { activo.value = it })
+            }
+
             Spacer(modifier = Modifier.height(16.dp))
             Row(modifier = Modifier.fillMaxWidth()) {
-                Button(onClick = {
-                    vm.save(
-                        fullName = nombre.value,
-                        phone = telefono.value,
-                        email = email.value,
-                        address = direccion.value,
-                        neighborhood = barrio.value,
-                        notes = notas.value
-                    )
-                    onSaved()
-                }, enabled = nombre.value.isNotBlank() && phoneIsValid, modifier = Modifier.weight(1f).padding(horizontal = 30.dp)) { Text("Guardar") }
+                Button(onClick = { /* eliminar */ }, modifier = Modifier.weight(1f)) { Text("Eliminar") }
+                Spacer(modifier = Modifier.height(0.dp).weight(0.1f))
+                Button(onClick = onSaved, modifier = Modifier.weight(1f)) { Text("Actualizar") }
             }
         }
     }
 }
-
-
