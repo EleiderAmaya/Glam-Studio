@@ -26,4 +26,13 @@ interface InvoiceDao {
 
     @Query("SELECT * FROM invoice_items WHERE invoiceId = :invoiceId")
     suspend fun getItems(invoiceId: String): List<InvoiceItemEntity>
+
+    @Query("SELECT * FROM invoices ORDER BY createdAtEpochMs DESC")
+    fun listAll(): Flow<List<InvoiceEntity>>
+
+    @Query("SELECT SUM(totalCents) FROM invoices WHERE status = 'PAID' AND createdAtEpochMs BETWEEN :startMs AND :endMs")
+    fun sumPaidInRange(startMs: Long, endMs: Long): Flow<Long?>
+
+    @Query("SELECT COUNT(*) FROM invoices WHERE status = 'PAID' AND createdAtEpochMs BETWEEN :startMs AND :endMs")
+    fun countPaidInRange(startMs: Long, endMs: Long): Flow<Int>
 }

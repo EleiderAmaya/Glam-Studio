@@ -31,16 +31,27 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.glamstudio.ui.theme.BorderLight
 import com.glamstudio.ui.theme.Primary
 import com.glamstudio.ui.viewmodel.HomeViewModel
+import java.text.NumberFormat
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Locale
+
+private fun formatCopFromCents(cents: Long): String {
+    val pesos = cents / 100
+    val cs = (cents % 100).toInt()
+    val nf = NumberFormat.getNumberInstance(Locale("es", "CO"))
+    return "${nf.format(pesos)},${cs.toString().padStart(2, '0')}"
+}
 
 @Composable
 fun HomeScreen(onFabClick: () -> Unit, onReportsClick: () -> Unit = {}, onAppointmentClick: () -> Unit = {}) {
     val context = LocalContext.current
     val vm: HomeViewModel = viewModel(factory = HomeViewModel.factory(context))
     val citas by vm.todayAppointments.collectAsState()
+    val confirmed by vm.todayConfirmedIncome.collectAsState()
+    val expected by vm.todayExpectedIncome.collectAsState()
+    val metrics by vm.monthMetrics.collectAsState()
 
     Surface(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.padding(16.dp)) {
@@ -90,8 +101,18 @@ fun HomeScreen(onFabClick: () -> Unit, onReportsClick: () -> Unit = {}, onAppoin
             Spacer(modifier = Modifier.height(8.dp))
 
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                KpiCard(titulo = "Ingresos hoy", valor = "$120.000", modifier = Modifier.weight(1f))
-                KpiCard(titulo = "Citas hoy", valor = "${citas.size}", modifier = Modifier.weight(1f))
+                KpiCard(titulo = "Ingresos hoy (confirmados)", valor = "${formatCopFromCents(confirmed)}", modifier = Modifier.weight(1f))
+                val porLlegar = (expected - confirmed).coerceAtLeast(0)
+                KpiCard(titulo = "Ingresos por llegar", valor = "${formatCopFromCents(porLlegar)}", modifier = Modifier.weight(1f))
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                KpiCard(titulo = "Agendadas (mes)", valor = "${metrics.scheduled}", modifier = Modifier.weight(1f))
+                KpiCard(titulo = "Canceladas (mes)", valor = "${metrics.cancelled}", modifier = Modifier.weight(1f))
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                KpiCard(titulo = "Ticket prom. (mes)", valor = "${formatCopFromCents(metrics.avgTicketCents)}", modifier = Modifier.weight(1f))
             }
 
             Spacer(modifier = Modifier.height(32.dp))

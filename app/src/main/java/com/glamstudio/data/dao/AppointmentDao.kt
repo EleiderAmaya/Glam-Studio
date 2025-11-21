@@ -38,6 +38,17 @@ interface AppointmentDao {
     @Query("DELETE FROM appointment_services WHERE appointmentId = :appointmentId")
     suspend fun deleteCrossRefsForAppointment(appointmentId: String)
 
+    @Query(
+        "SELECT IFNULL(SUM(s.priceCents), 0) FROM appointment_services as asr " +
+        "INNER JOIN services s ON s.id = asr.serviceId " +
+        "INNER JOIN appointments a ON a.id = asr.appointmentId " +
+        "WHERE a.dateEpochMs = :dateEpochMs"
+    )
+    fun sumServicesPriceForDay(dateEpochMs: Long): Flow<Long>
+
+    @Query("SELECT COUNT(*) FROM appointments WHERE status = :status AND startEpochMs BETWEEN :startMs AND :endMs")
+    fun countByStatusInRange(status: String, startMs: Long, endMs: Long): Flow<Int>
+
     @Transaction
     suspend fun replaceServicesForAppointment(appointmentId: String, serviceIds: List<String>) {
         deleteCrossRefsForAppointment(appointmentId)
