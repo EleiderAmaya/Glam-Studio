@@ -220,11 +220,11 @@ fun AppRoot() {
 
             composable(Route.ClientDetail.path, arguments = listOf(navArgument("id") { type = NavType.StringType })) { backStack ->
                 val id = backStack.arguments?.getString("id") ?: return@composable
-                ClientDetailScreen(onSaved = { navController.popBackStack() }, onBack = { navController.popBackStack() })
+                ClientDetailScreen(clientId = id, onSaved = { navController.popBackStack() }, onBack = { navController.popBackStack() })
             }
             composable(Route.ServiceDetail.path, arguments = listOf(navArgument("id") { type = NavType.StringType })) { backStack ->
                 val id = backStack.arguments?.getString("id") ?: return@composable
-                ServiceDetailScreen(onSaved = { navController.popBackStack() }, onBack = { navController.popBackStack() })
+                ServiceDetailScreen(serviceId = id, onSaved = { navController.popBackStack() }, onBack = { navController.popBackStack() })
             }
             composable(Route.AppointmentDetail.path, arguments = listOf(navArgument("id") { type = NavType.StringType })) { backStack ->
                 val id = backStack.arguments?.getString("id") ?: return@composable

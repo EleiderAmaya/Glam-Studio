@@ -19,17 +19,26 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.glamstudio.ui.viewmodel.ClientDetailViewModel
 
 /**
- * Detalle de cliente.
+ * Detalle de cliente con carga por ID y edición.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ClientDetailScreen(onSaved: () -> Unit, onBack: () -> Unit = {}) {
+fun ClientDetailScreen(clientId: String, onSaved: () -> Unit, onBack: () -> Unit = {}) {
+    val context = LocalContext.current
+    val vm: ClientDetailViewModel = viewModel(factory = ClientDetailViewModel.factory(context, clientId))
+
     val nombre = remember { mutableStateOf("") }
     val telefono = remember { mutableStateOf("") }
     val email = remember { mutableStateOf("") }
@@ -37,6 +46,24 @@ fun ClientDetailScreen(onSaved: () -> Unit, onBack: () -> Unit = {}) {
     val barrio = remember { mutableStateOf("") }
     val notas = remember { mutableStateOf("") }
     val activo = remember { mutableStateOf(true) }
+    val vip = remember { mutableStateOf(false) }
+    val editMode = remember { mutableStateOf(false) }
+
+    LaunchedEffect(vm.client) {
+        vm.client.value?.let { c ->
+            nombre.value = c.fullName
+            telefono.value = c.phone
+            email.value = c.email ?: ""
+            direccion.value = c.address ?: ""
+            barrio.value = c.neighborhood ?: ""
+            notas.value = c.notes ?: ""
+            activo.value = c.isActive
+            vip.value = c.isVip
+        }
+    }
+
+    val phoneIsValid = telefono.value.length in 7..12
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -46,24 +73,49 @@ fun ClientDetailScreen(onSaved: () -> Unit, onBack: () -> Unit = {}) {
         }
     ) { paddingValues ->
         Column(modifier = Modifier.fillMaxSize().padding(paddingValues).padding(16.dp)) {
-            OutlinedTextField(value = nombre.value, onValueChange = { nombre.value = it }, label = { Text("Nombre completo") }, modifier = Modifier.fillMaxWidth())
-            OutlinedTextField(value = telefono.value, onValueChange = { telefono.value = it }, label = { Text("Teléfono") }, modifier = Modifier.fillMaxWidth())
-            OutlinedTextField(value = email.value, onValueChange = { email.value = it }, label = { Text("Email (opcional)") }, modifier = Modifier.fillMaxWidth())
-            OutlinedTextField(value = direccion.value, onValueChange = { direccion.value = it }, label = { Text("Dirección principal") }, modifier = Modifier.fillMaxWidth())
-            OutlinedTextField(value = barrio.value, onValueChange = { barrio.value = it }, label = { Text("Barrio (opcional)") }, modifier = Modifier.fillMaxWidth())
-            OutlinedTextField(value = notas.value, onValueChange = { notas.value = it }, label = { Text("Notas") }, modifier = Modifier.fillMaxWidth())
+            OutlinedTextField(value = nombre.value, onValueChange = { if (editMode.value) nombre.value = it }, label = { Text("Nombre completo") }, modifier = Modifier.fillMaxWidth(), readOnly = !editMode.value)
+            OutlinedTextField(
+                value = telefono.value,
+                onValueChange = { if (editMode.value) telefono.value = it.filter { ch -> ch.isDigit() } },
+                label = { Text("Teléfono") },
+                modifier = Modifier.fillMaxWidth(),
+                isError = editMode.value && telefono.value.isNotBlank() && !phoneIsValid,
+                supportingText = { if (editMode.value && telefono.value.isNotBlank() && !phoneIsValid) Text("7–12 dígitos") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                readOnly = !editMode.value
+            )
+            OutlinedTextField(value = email.value, onValueChange = { if (editMode.value) email.value = it }, label = { Text("Email (opcional)") }, modifier = Modifier.fillMaxWidth(), readOnly = !editMode.value)
+            OutlinedTextField(value = direccion.value, onValueChange = { if (editMode.value) direccion.value = it }, label = { Text("Dirección principal") }, modifier = Modifier.fillMaxWidth(), readOnly = !editMode.value)
+            OutlinedTextField(value = barrio.value, onValueChange = { if (editMode.value) barrio.value = it }, label = { Text("Barrio (opcional)") }, modifier = Modifier.fillMaxWidth(), readOnly = !editMode.value)
+            OutlinedTextField(value = notas.value, onValueChange = { if (editMode.value) notas.value = it }, label = { Text("Notas") }, modifier = Modifier.fillMaxWidth(), readOnly = !editMode.value)
 
             Spacer(modifier = Modifier.height(8.dp))
             Row(modifier = Modifier.fillMaxWidth()) {
-                Text("Estado: Activo", modifier = Modifier.weight(1f))
-                Switch(checked = activo.value, onCheckedChange = { activo.value = it })
+                Text("Activo", modifier = Modifier.weight(1f))
+                Switch(checked = activo.value, onCheckedChange = { if (editMode.value) activo.value = it })
             }
 
             Spacer(modifier = Modifier.height(16.dp))
             Row(modifier = Modifier.fillMaxWidth()) {
-                Button(onClick = { /* eliminar */ }, modifier = Modifier.weight(1f)) { Text("Eliminar") }
+                Button(onClick = { vm.delete(onSaved) }, modifier = Modifier.weight(1f)) { Text("Eliminar") }
                 Spacer(modifier = Modifier.height(0.dp).weight(0.1f))
-                Button(onClick = onSaved, modifier = Modifier.weight(1f)) { Text("Actualizar") }
+                if (!editMode.value) {
+                    Button(onClick = { editMode.value = true }, modifier = Modifier.weight(1f)) { Text("Editar") }
+                } else {
+                    Button(onClick = {
+                        vm.update(
+                            fullName = nombre.value,
+                            phone = telefono.value,
+                            email = email.value,
+                            address = direccion.value,
+                            neighborhood = barrio.value,
+                            notes = notas.value,
+                            isActive = activo.value,
+                            isVip = vip.value
+                        )
+                        onSaved()
+                    }, enabled = phoneIsValid && nombre.value.isNotBlank(), modifier = Modifier.weight(1f)) { Text("Guardar") }
+                }
             }
         }
     }
