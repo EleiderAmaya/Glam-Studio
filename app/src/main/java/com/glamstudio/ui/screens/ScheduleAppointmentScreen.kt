@@ -2,6 +2,7 @@ package com.glamstudio.ui.screens
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,6 +13,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.AccessTime
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -19,9 +23,13 @@ import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TimePicker
+import androidx.compose.material3.TimePickerState
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -30,6 +38,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -50,6 +59,20 @@ fun ScheduleAppointmentScreen(date: LocalDate, onBack: () -> Unit) {
         Service(id = "3", name = "Corte de Pelo", description = "Corte y peinado.", durationInMinutes = 60, price = 40000.0)
     )
     var isServiceMenuExpanded by remember { mutableStateOf(false) }
+    var startTime by remember { mutableStateOf<java.time.LocalTime?>(null) } // Puede ser nulo al principio
+    val timeSlots = remember {
+        val slots = mutableListOf<java.time.LocalTime>()
+        var time = java.time.LocalTime.of(10, 0)
+        val endTime = java.time.LocalTime.of(18, 0) // 6:00 PM
+        while (time <= endTime) {
+            slots.add(time)
+            time = time.plusMinutes(30)
+        }
+        slots
+    }
+    val isFormComplete = selectedClientText != "Seleccionar Cliente" &&
+            selectedServices.isNotEmpty() &&
+            startTime != null
     Scaffold(
         topBar = {
             TopAppBar(
@@ -125,7 +148,9 @@ fun ScheduleAppointmentScreen(date: LocalDate, onBack: () -> Unit) {
                     label = { Text("Servicios") },
                     trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isServiceMenuExpanded) },
                     colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(),
-                    modifier = Modifier.menuAnchor().fillMaxWidth()
+                    modifier = Modifier
+                        .menuAnchor()
+                        .fillMaxWidth()
                 )
                 ExposedDropdownMenu(
                     expanded = isServiceMenuExpanded,
@@ -155,6 +180,67 @@ fun ScheduleAppointmentScreen(date: LocalDate, onBack: () -> Unit) {
                         )
                     }
                 }
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+            var isTimeMenuExpanded by remember { mutableStateOf(false) }
+            ExposedDropdownMenuBox(
+                expanded = isTimeMenuExpanded,
+                onExpandedChange = { isTimeMenuExpanded = it },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                OutlinedTextField(
+                    value = startTime?.format(DateTimeFormatter.ofPattern("hh:mm a")) ?: "Seleccionar Hora",
+                    onValueChange = {},
+                    readOnly = true,
+                    label = { Text("Hora de Inicio") },
+                    leadingIcon = { Icon(Icons.Filled.AccessTime, contentDescription = "Selector de hora") },
+                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isTimeMenuExpanded) },
+                    colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(),
+                    modifier = Modifier
+                        .menuAnchor()
+                        .fillMaxWidth()
+                )
+                ExposedDropdownMenu(
+                    expanded = isTimeMenuExpanded,
+                    onDismissRequest = { isTimeMenuExpanded = false },
+                ) {
+                    timeSlots.forEach { time ->
+                        DropdownMenuItem(
+                            text = { Text(time.format(DateTimeFormatter.ofPattern("hh:mm a", Locale("es", "ES")))) },
+                            onClick = {
+                                startTime = time // Actualiza la hora seleccionada
+                                isTimeMenuExpanded = false // Cierra el menú
+                            }
+                        )
+                    }
+                }
+            }
+            if (startTime != null) {
+                val totalDurationInMinutes = selectedServices.sumOf { it.durationInMinutes }.toLong()
+                val endTime = startTime!!.plusMinutes(totalDurationInMinutes)
+
+                Text(
+                    text = "Hora de fin estimada: ${endTime.format(java.time.format.DateTimeFormatter.ofPattern("hh:mm a"))}",
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(top = 8.dp)
+                )
+            }
+            Spacer(modifier = Modifier.weight(1f))
+
+            Button(
+                onClick = {
+                    // AQUÍ IRÁ LA LÓGICA PARA GUARDAR EN LA BASE DE DATOS
+                    // Por ahora, simplemente navegamos hacia atrás.
+                    onBack()
+                },
+                // Usamos nuestra variable de validación para habilitar/deshabilitar el botón
+                enabled = isFormComplete,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 16.dp) // Un poco de espacio en la parte inferior
+            ) {
+                Text("Confirmar Cita", style = MaterialTheme.typography.titleMedium)
             }
         }
     }
