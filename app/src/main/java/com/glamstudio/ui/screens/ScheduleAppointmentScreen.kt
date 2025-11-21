@@ -27,52 +27,63 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.glamstudio.data.entity.ClientEntity
+import com.glamstudio.data.entity.ServiceEntity
+import com.glamstudio.ui.viewmodel.ScheduleViewModel
 import java.time.LocalDate
+import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
+import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ScheduleAppointmentScreen(date: LocalDate, onBack: () -> Unit) {
+    val context = LocalContext.current
+    val vm: ScheduleViewModel = viewModel(factory = ScheduleViewModel.factory(context))
+    val scope = rememberCoroutineScope()
+
+    val clients by vm.clients.collectAsState(initial = emptyList())
+    val services by vm.services.collectAsState(initial = emptyList())
+
     var isClientMenuExpanded by remember { mutableStateOf(false) }
-    var selectedClientText by remember { mutableStateOf("Seleccionar Cliente") }
-    val allClients = listOf("Eleider", "Ana García", "Carlos Pérez", "Sandra Rodríguez", "David Martínez") // lista de clientes Simulada
-    val sortedClients = allClients.sorted() // Ordenarla alfabéticamente
-    var selectedServices by remember { mutableStateOf(setOf<Service>()) }
-    val allServices = listOf(
-        Service(id = "1", name = "Manicura", description = "Cuidado completo de uñas y manos.", durationInMinutes = 30, price = 25000.0),
-        Service(id = "2", name = "Pedicura", description = "Cuidado completo de uñas y pies.", durationInMinutes = 45, price = 35000.0),
-        Service(id = "3", name = "Corte de Pelo", description = "Corte y peinado.", durationInMinutes = 60, price = 40000.0)
-    )
+    var selectedClient: ClientEntity? by remember { mutableStateOf(null) }
+
+    var selectedServices by remember { mutableStateOf(setOf<ServiceEntity>()) }
     var isServiceMenuExpanded by remember { mutableStateOf(false) }
-    var startTime by remember { mutableStateOf<java.time.LocalTime?>(null) } // Puede ser nulo al principio
+
+    var startTime by remember { mutableStateOf<LocalTime?>(null) }
     val timeSlots = remember {
-        val slots = mutableListOf<java.time.LocalTime>()
-        var time = java.time.LocalTime.of(10, 0)
-        val endTime = java.time.LocalTime.of(18, 0) // 6:00 PM
+        val slots = mutableListOf<LocalTime>()
+        var time = LocalTime.of(10, 0)
+        val endTime = LocalTime.of(18, 0)
         while (time <= endTime) {
             slots.add(time)
             time = time.plusMinutes(30)
         }
         slots
     }
-    val isFormComplete = selectedClientText != "Seleccionar Cliente" &&
-            selectedServices.isNotEmpty() &&
-            startTime != null
+
+    val isFormComplete = selectedClient != null && selectedServices.isNotEmpty() && startTime != null
+
     Scaffold(
         topBar = {
             TopAppBar(
                 title = {
-                    // Formateamos la fecha para que se vea bonita en español
                     val formatter =
                         DateTimeFormatter.ofPattern("d 'de' MMMM 'de' yyyy", Locale("es", "ES"))
                     Text(text = "Agendar para ${date.format(formatter)}")
@@ -93,14 +104,12 @@ fun ScheduleAppointmentScreen(date: LocalDate, onBack: () -> Unit) {
         ) {
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Selector de Cliente
             ExposedDropdownMenuBox(
                 expanded = isClientMenuExpanded,
-                onExpandedChange = { isClientMenuExpanded = it }, // Él gestiona la expansión/cierre
+                onExpandedChange = { isClientMenuExpanded = it },
                 modifier = Modifier.fillMaxWidth()
             ) {
-                // Este OutlinedTextField se ve como un campo de texto, pero no se puede editar.
-                // Solo responde a los clics.
+                val selectedClientText = selectedClient?.fullName ?: "Seleccionar Cliente"
                 OutlinedTextField(
                     value = selectedClientText,
                     onValueChange = {},
@@ -115,15 +124,15 @@ fun ScheduleAppointmentScreen(date: LocalDate, onBack: () -> Unit) {
                         .fillMaxWidth()
                 )
                 ExposedDropdownMenu(
-                    expanded = isClientMenuExpanded, // El menú se muestra si esto es 'true'
-                    onDismissRequest = { isClientMenuExpanded = false }, // Se oculta si el usuario pulsa fuera
+                    expanded = isClientMenuExpanded,
+                    onDismissRequest = { isClientMenuExpanded = false },
                 ) {
-                    sortedClients.forEach { client ->
+                    clients.sortedBy { it.fullName }.forEach { client ->
                         DropdownMenuItem(
-                            text = { Text(client) },
+                            text = { Text(client.fullName) },
                             onClick = {
-                                selectedClientText = client // Actualiza el texto del campo
-                                isClientMenuExpanded = false // Cierra el menú
+                                selectedClient = client
+                                isClientMenuExpanded = false
                             }
                         )
                     }
@@ -149,9 +158,9 @@ fun ScheduleAppointmentScreen(date: LocalDate, onBack: () -> Unit) {
                 )
                 ExposedDropdownMenu(
                     expanded = isServiceMenuExpanded,
-                    onDismissRequest = { isServiceMenuExpanded = false } // Se cierra al pulsar fuera
+                    onDismissRequest = { isServiceMenuExpanded = false }
                 ) {
-                    allServices.forEach { service ->
+                    services.forEach { service ->
                         DropdownMenuItem(
                             text = {
                                 Row(
@@ -159,18 +168,14 @@ fun ScheduleAppointmentScreen(date: LocalDate, onBack: () -> Unit) {
                                 ) {
                                     Checkbox(
                                         checked = selectedServices.contains(service),
-                                        onCheckedChange = null // La lógica va en el onClick principal
+                                        onCheckedChange = null
                                     )
                                     Spacer(modifier = Modifier.width(8.dp))
                                     Text(text = service.name)
                                 }
                             },
                             onClick = {
-                                if (selectedServices.contains(service)) {
-                                    selectedServices = selectedServices - service
-                                } else {
-                                    selectedServices = selectedServices + service
-                                }
+                                selectedServices = if (selectedServices.contains(service)) selectedServices - service else selectedServices + service
                             }
                         )
                     }
@@ -203,15 +208,15 @@ fun ScheduleAppointmentScreen(date: LocalDate, onBack: () -> Unit) {
                         DropdownMenuItem(
                             text = { Text(time.format(DateTimeFormatter.ofPattern("hh:mm a", Locale("es", "ES")))) },
                             onClick = {
-                                startTime = time // Actualiza la hora seleccionada
-                                isTimeMenuExpanded = false // Cierra el menú
+                                startTime = time
+                                isTimeMenuExpanded = false
                             }
                         )
                     }
                 }
             }
             if (startTime != null) {
-                val totalDurationInMinutes = selectedServices.sumOf { it.durationInMinutes }.toLong()
+                val totalDurationInMinutes = selectedServices.sumOf { it.durationMinutes }.toLong()
                 val endTime = startTime!!.plusMinutes(totalDurationInMinutes)
 
                 Text(
@@ -225,15 +230,24 @@ fun ScheduleAppointmentScreen(date: LocalDate, onBack: () -> Unit) {
 
             Button(
                 onClick = {
-                    // AQUÍ IRÁ LA LÓGICA PARA GUARDAR EN LA BASE DE DATOS
-                    // Por ahora, simplemente navegamos hacia atrás.
-                    onBack()
+                    val clientId = selectedClient?.id
+                    val start = startTime
+                    if (clientId != null && start != null && selectedServices.isNotEmpty()) {
+                        scope.launch {
+                            vm.saveAppointment(
+                                clientId = clientId,
+                                date = date,
+                                startTime = start,
+                                selectedServices = selectedServices.toList()
+                            )
+                            onBack()
+                        }
+                    }
                 },
-                // Usamos nuestra variable de validación para habilitar/deshabilitar el botón
                 enabled = isFormComplete,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 16.dp) // Un poco de espacio en la parte inferior
+                    .padding(bottom = 16.dp)
             ) {
                 Text("Confirmar Cita", style = MaterialTheme.typography.titleMedium)
             }

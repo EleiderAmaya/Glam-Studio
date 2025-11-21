@@ -21,23 +21,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.glamstudio.ui.viewmodel.NewClientViewModel
 
 /**
  * Formulario de creación/edición de cliente.
- *
- * Patrón:
- * - Campos controlados con estado.
- * - Switch/acciones al final y botones principales de flujo (Guardar/Eliminar).
- *
- * Reutilización:
- * - Extrae validaciones a un ViewModel y refleja errores con `isError`/`supportingText`.
- * - Usa `onSaved` para retornar/navegar tras persistir.
- * - Si compartes UI con edición, inicializa los estados con los valores del cliente existente.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NewClientScreen(onSaved: () -> Unit, onBack: () -> Unit = {}) {
+    val context = LocalContext.current
+    val vm: NewClientViewModel = viewModel(factory = NewClientViewModel.factory(context))
+
     val nombre = remember { mutableStateOf("") }
     val telefono = remember { mutableStateOf("") }
     val email = remember { mutableStateOf("") }
@@ -64,7 +61,17 @@ fun NewClientScreen(onSaved: () -> Unit, onBack: () -> Unit = {}) {
 
             Spacer(modifier = Modifier.height(16.dp))
             Row(modifier = Modifier.fillMaxWidth()) {
-                Button(onClick = onSaved, modifier = Modifier.weight(1f).padding(horizontal = 30.dp)) { Text("Guardar") }
+                Button(onClick = {
+                    vm.save(
+                        fullName = nombre.value,
+                        phone = telefono.value,
+                        email = email.value,
+                        address = direccion.value,
+                        neighborhood = barrio.value,
+                        notes = notas.value
+                    )
+                    onSaved()
+                }, modifier = Modifier.weight(1f).padding(horizontal = 30.dp)) { Text("Guardar") }
             }
         }
     }
