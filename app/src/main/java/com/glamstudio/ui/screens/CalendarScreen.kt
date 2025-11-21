@@ -53,7 +53,7 @@ import java.util.Locale
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun CalendarScreen(onDaySelected: (date: LocalDate) -> Unit, onGenerateInvoice: () -> Unit, onAppointmentClick: () -> Unit = {}) {
+fun CalendarScreen(onDaySelected: (date: LocalDate) -> Unit, onGenerateInvoice: () -> Unit, onAppointmentClick: (String) -> Unit = {}) {
     var currentDisplayedDate by remember { mutableStateOf(LocalDate.now()) }
     val daysInMonth = currentDisplayedDate.lengthOfMonth()
     val dias = (1..daysInMonth).toList()
@@ -148,7 +148,7 @@ fun CalendarScreen(onDaySelected: (date: LocalDate) -> Unit, onGenerateInvoice: 
                         val time = DateTimeFormatter.ofPattern("hh:mm a", Locale("es","ES")).format(
                             java.time.Instant.ofEpochMilli(appt.startEpochMs).atZone(ZoneId.systemDefault()).toLocalTime()
                         )
-                        Text("Cita de hoy • ${appt.clientName} • $time", modifier = Modifier.clickable { onAppointmentClick() })
+                        Text("Cita de hoy • ${appt.clientName} • $time", modifier = Modifier.clickable { onAppointmentClick(appt.id) })
                     }
                 }
             }

@@ -111,5 +111,3 @@ fun ClientsScreen(onAddClick: () -> Unit, onItemClick: (ClientEntity) -> Unit = 
         }
     }
 }
-
-

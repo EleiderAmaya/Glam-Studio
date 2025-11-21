@@ -45,7 +45,7 @@ private fun formatCopFromCents(cents: Long): String {
 }
 
 @Composable
-fun HomeScreen(onFabClick: () -> Unit, onReportsClick: () -> Unit = {}, onAppointmentClick: () -> Unit = {}) {
+fun HomeScreen(onFabClick: () -> Unit, onReportsClick: () -> Unit = {}, onAppointmentClick: (String) -> Unit = {}) {
     val context = LocalContext.current
     val vm: HomeViewModel = viewModel(factory = HomeViewModel.factory(context))
     val citasHoy by vm.todayAppointments.collectAsState()
@@ -76,7 +76,7 @@ fun HomeScreen(onFabClick: () -> Unit, onReportsClick: () -> Unit = {}, onAppoin
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(8.dp)
-                            .clickable { onAppointmentClick() },
+                            .clickable { onAppointmentClick(cita.id) },
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         androidx.compose.foundation.Canvas(modifier = Modifier.height(48.dp).fillMaxWidth(0.15f)) { drawCircle(color = Primary) }
@@ -104,7 +104,7 @@ fun HomeScreen(onFabClick: () -> Unit, onReportsClick: () -> Unit = {}, onAppoin
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(8.dp)
-                            .clickable { onAppointmentClick() },
+                            .clickable { onAppointmentClick(cita.id) },
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         androidx.compose.foundation.Canvas(modifier = Modifier.height(48.dp).fillMaxWidth(0.15f)) { drawCircle(color = Primary) }
