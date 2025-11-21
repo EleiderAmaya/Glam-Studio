@@ -32,6 +32,15 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.glamstudio.data.entity.ServiceEntity
 import com.glamstudio.ui.theme.BorderLight
 import com.glamstudio.ui.viewmodel.ServicesViewModel
+import java.text.NumberFormat
+import java.util.Locale
+
+private fun formatCop(priceCents: Long): String {
+    val pesos = priceCents / 100
+    val cents = (priceCents % 100).toInt()
+    val nf = NumberFormat.getNumberInstance(Locale("es", "CO"))
+    return "${nf.format(pesos)},${cents.toString().padStart(2, '0')} COP"
+}
 
 /**
  * Lista de servicios respaldada por Room.
@@ -67,21 +76,21 @@ fun ServicesScreen(onAddClick: () -> Unit, onItemClick: (ServiceEntity) -> Unit 
         )
         Spacer(modifier = Modifier.height(8.dp))
 
-        LazyColumn {
+        LazyColumn(verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(8.dp)) {
             items(servicios) { s ->
                 Surface(
                     border = BorderStroke(1.dp, BorderLight),
                     shape = RoundedCornerShape(12.dp),
-                    modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp),
+                    modifier = Modifier.fillMaxWidth(),
                     onClick = { onItemClick(s) }
                 ) {
                     Row(modifier = Modifier.fillMaxWidth().padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
                         Column(modifier = Modifier.weight(1f)) {
                             Text(text = s.name, fontWeight = FontWeight.Medium)
-                            Text(text = "${'$'}{s.durationMinutes} min", style = MaterialTheme.typography.bodySmall)
+                            Text(text = "${s.durationMinutes} min", style = MaterialTheme.typography.bodySmall)
                         }
-                        Text(text = "${'$'}${'$'}{s.priceCents / 100} .${'$'}{(s.priceCents % 100).toString().padStart(2, '0')} COP", fontWeight = FontWeight.Medium)
-                }
+                        Text(text = formatCop(s.priceCents), fontWeight = FontWeight.Medium)
+                    }
                 }
             }
         }

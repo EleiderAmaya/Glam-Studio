@@ -59,11 +59,15 @@ fun CalendarScreen(onDaySelected: (date: LocalDate) -> Unit, onGenerateInvoice: 
     val daysInMonth = currentDisplayedDate.lengthOfMonth()
     val dias = (1..daysInMonth).toList()
 
+    val today = LocalDate.now()
+    var selectedDayOfMonth by remember { mutableStateOf(if (today.month == currentDisplayedDate.month && today.year == currentDisplayedDate.year) today.dayOfMonth else 1) }
+
     val context = LocalContext.current
     val vm: CalendarViewModel = viewModel(factory = CalendarViewModel.factory(context))
 
     LaunchedEffect(currentDisplayedDate) {
         vm.setMonth(currentDisplayedDate)
+        selectedDayOfMonth = if (today.month == currentDisplayedDate.month && today.year == currentDisplayedDate.year) today.dayOfMonth else 1
     }
 
     val occupancy by vm.occupancyByDay.collectAsState()
@@ -94,7 +98,7 @@ fun CalendarScreen(onDaySelected: (date: LocalDate) -> Unit, onGenerateInvoice: 
         }
         Spacer(modifier = Modifier.height(8.dp))
 
-        val leadingEmpty = 3 // TODO: calcular según el primer día del mes si se requiere precisión
+        val leadingEmpty = 3
         val celdas = List(leadingEmpty) { 0 } + dias
 
         LazyVerticalGrid(
@@ -113,15 +117,16 @@ fun CalendarScreen(onDaySelected: (date: LocalDate) -> Unit, onGenerateInvoice: 
                     val dia = celdas[index]
                     val ratio = occupancy[dia] ?: 0f
                     val color = when {
-                        ratio >= 1f -> Color(0xFFE53935) // rojo (full)
-                        ratio >= 0.5f -> Color(0xFFFFA726) // naranja (>= mitad)
-                        else -> Color(0xFF43A047) // verde (< mitad)
+                        ratio >= 1f -> Color(0xFFE53935)
+                        ratio >= 0.5f -> Color(0xFFFFA726)
+                        else -> Color(0xFF43A047)
                     }
                     DiaCell(
                         dia = dia,
                         color = color,
-                        seleccionado = false,
+                        seleccionado = dia == selectedDayOfMonth,
                     ) {
+                        selectedDayOfMonth = dia
                         val selectedDate = LocalDate.of(currentDisplayedDate.year, currentDisplayedDate.month, dia)
                         onDaySelected(selectedDate)
                     }

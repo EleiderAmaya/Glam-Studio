@@ -22,6 +22,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.glamstudio.ui.viewmodel.NewClientViewModel
@@ -41,6 +43,9 @@ fun NewClientScreen(onSaved: () -> Unit, onBack: () -> Unit = {}) {
     val direccion = remember { mutableStateOf("") }
     val barrio = remember { mutableStateOf("") }
     val notas = remember { mutableStateOf("") }
+
+    val phoneIsValid = telefono.value.length in 7..12
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -53,7 +58,15 @@ fun NewClientScreen(onSaved: () -> Unit, onBack: () -> Unit = {}) {
     ) { paddingValues ->
         Column(modifier = Modifier.fillMaxSize().padding(paddingValues).padding(16.dp)) {
             OutlinedTextField(value = nombre.value, onValueChange = { nombre.value = it }, label = { Text("Nombre completo") }, modifier = Modifier.fillMaxWidth())
-            OutlinedTextField(value = telefono.value, onValueChange = { telefono.value = it }, label = { Text("Teléfono") }, modifier = Modifier.fillMaxWidth())
+            OutlinedTextField(
+                value = telefono.value,
+                onValueChange = { input -> telefono.value = input.filter { it.isDigit() } },
+                label = { Text("Teléfono") },
+                modifier = Modifier.fillMaxWidth(),
+                isError = telefono.value.isNotBlank() && !phoneIsValid,
+                supportingText = { if (telefono.value.isNotBlank() && !phoneIsValid) Text("7–12 dígitos, sin indicativo") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+            )
             OutlinedTextField(value = email.value, onValueChange = { email.value = it }, label = { Text("Email (opcional)") }, modifier = Modifier.fillMaxWidth())
             OutlinedTextField(value = direccion.value, onValueChange = { direccion.value = it }, label = { Text("Dirección principal") }, modifier = Modifier.fillMaxWidth())
             OutlinedTextField(value = barrio.value, onValueChange = { barrio.value = it }, label = { Text("Barrio (opcional)") }, modifier = Modifier.fillMaxWidth())
@@ -71,7 +84,7 @@ fun NewClientScreen(onSaved: () -> Unit, onBack: () -> Unit = {}) {
                         notes = notas.value
                     )
                     onSaved()
-                }, modifier = Modifier.weight(1f).padding(horizontal = 30.dp)) { Text("Guardar") }
+                }, enabled = nombre.value.isNotBlank() && phoneIsValid, modifier = Modifier.weight(1f).padding(horizontal = 30.dp)) { Text("Guardar") }
             }
         }
     }
