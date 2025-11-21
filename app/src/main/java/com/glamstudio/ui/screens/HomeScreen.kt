@@ -48,7 +48,8 @@ private fun formatCopFromCents(cents: Long): String {
 fun HomeScreen(onFabClick: () -> Unit, onReportsClick: () -> Unit = {}, onAppointmentClick: () -> Unit = {}) {
     val context = LocalContext.current
     val vm: HomeViewModel = viewModel(factory = HomeViewModel.factory(context))
-    val citas by vm.todayAppointments.collectAsState()
+    val citasHoy by vm.todayAppointments.collectAsState()
+    val citasManana by vm.tomorrowAppointments.collectAsState()
     val confirmed by vm.todayConfirmedIncome.collectAsState()
     val expected by vm.todayExpectedIncome.collectAsState()
     val metrics by vm.monthMetrics.collectAsState()
@@ -56,21 +57,21 @@ fun HomeScreen(onFabClick: () -> Unit, onReportsClick: () -> Unit = {}, onAppoin
     Surface(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(
-                text = "Hola, Belinda",
+                text = "Glam Studio",
                 style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold)
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
-                text = "Próximas citas",
+                text = "Próximas citas (hoy)",
                 style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
             )
 
             Spacer(modifier = Modifier.height(8.dp))
 
             LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                items(citas) { cita ->
+                items(citasHoy) { cita ->
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -78,9 +79,35 @@ fun HomeScreen(onFabClick: () -> Unit, onReportsClick: () -> Unit = {}, onAppoin
                             .clickable { onAppointmentClick() },
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        androidx.compose.foundation.Canvas(modifier = Modifier.height(48.dp).fillMaxWidth(0.15f)) {
-                            drawCircle(color = Primary)
+                        androidx.compose.foundation.Canvas(modifier = Modifier.height(48.dp).fillMaxWidth(0.15f)) { drawCircle(color = Primary) }
+                        Column(modifier = Modifier.weight(1f).padding(start = 12.dp)) {
+                            val time = DateTimeFormatter.ofPattern("hh:mm a", Locale("es","ES")).format(
+                                Instant.ofEpochMilli(cita.startEpochMs).atZone(ZoneId.systemDefault()).toLocalTime()
+                            )
+                            Text(text = cita.clientName, fontWeight = FontWeight.SemiBold)
+                            Text(text = time, color = Color(0xFF896175), fontSize = 12.sp)
                         }
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            Text(
+                text = "Próximas citas (mañana)",
+                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                items(citasManana) { cita ->
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp)
+                            .clickable { onAppointmentClick() },
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        androidx.compose.foundation.Canvas(modifier = Modifier.height(48.dp).fillMaxWidth(0.15f)) { drawCircle(color = Primary) }
                         Column(modifier = Modifier.weight(1f).padding(start = 12.dp)) {
                             val time = DateTimeFormatter.ofPattern("hh:mm a", Locale("es","ES")).format(
                                 Instant.ofEpochMilli(cita.startEpochMs).atZone(ZoneId.systemDefault()).toLocalTime()

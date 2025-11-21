@@ -43,7 +43,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.glamstudio.data.model.AppointmentWithClient
 import com.glamstudio.ui.theme.Primary
 import com.glamstudio.ui.viewmodel.CalendarViewModel
 import java.time.Instant
@@ -77,18 +76,14 @@ fun CalendarScreen(onDaySelected: (date: LocalDate) -> Unit, onGenerateInvoice: 
         .fillMaxSize()
         .padding(16.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            IconButton(onClick = { currentDisplayedDate = currentDisplayedDate.minusMonths(1) }) {
-                Icon(Icons.Default.ArrowBackIos, contentDescription = "Mes anterior")
-            }
+            IconButton(onClick = { currentDisplayedDate = currentDisplayedDate.minusMonths(1) }) { Icon(Icons.Default.ArrowBackIos, contentDescription = "Mes anterior") }
             Text(
                 text = "${currentDisplayedDate.month.name} ${currentDisplayedDate.year}",
                 modifier = Modifier.weight(1f),
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
             )
-            IconButton(onClick = { currentDisplayedDate = currentDisplayedDate.plusMonths(1) }) {
-                Icon(Icons.Default.ArrowForwardIos, contentDescription = "Mes siguiente")
-            }
+            IconButton(onClick = { currentDisplayedDate = currentDisplayedDate.plusMonths(1) }) { Icon(Icons.Default.ArrowForwardIos, contentDescription = "Mes siguiente") }
         }
         Spacer(modifier = Modifier.height(8.dp))
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
@@ -98,7 +93,9 @@ fun CalendarScreen(onDaySelected: (date: LocalDate) -> Unit, onGenerateInvoice: 
         }
         Spacer(modifier = Modifier.height(8.dp))
 
-        val leadingEmpty = 3
+        val firstDay = currentDisplayedDate.withDayOfMonth(1)
+        val dow = firstDay.dayOfWeek.value // 1=Lunes..7=Domingo
+        val leadingEmpty = dow % 7 // con cabecera empezando en Domingo
         val celdas = List(leadingEmpty) { 0 } + dias
 
         LazyVerticalGrid(
@@ -115,8 +112,11 @@ fun CalendarScreen(onDaySelected: (date: LocalDate) -> Unit, onGenerateInvoice: 
                     Box(modifier = Modifier.height(44.dp)) {}
                 } else {
                     val dia = celdas[index]
+                    val date = LocalDate.of(currentDisplayedDate.year, currentDisplayedDate.month, dia)
                     val ratio = occupancy[dia] ?: 0f
+                    val isPast = date.isBefore(today)
                     val color = when {
+                        isPast -> Color(0xFFBDBDBD) // atenuado
                         ratio >= 1f -> Color(0xFFE53935)
                         ratio >= 0.5f -> Color(0xFFFFA726)
                         else -> Color(0xFF43A047)
@@ -127,8 +127,7 @@ fun CalendarScreen(onDaySelected: (date: LocalDate) -> Unit, onGenerateInvoice: 
                         seleccionado = dia == selectedDayOfMonth,
                     ) {
                         selectedDayOfMonth = dia
-                        val selectedDate = LocalDate.of(currentDisplayedDate.year, currentDisplayedDate.month, dia)
-                        onDaySelected(selectedDate)
+                        onDaySelected(date)
                     }
                 }
             }
@@ -147,9 +146,9 @@ fun CalendarScreen(onDaySelected: (date: LocalDate) -> Unit, onGenerateInvoice: 
                 } else {
                     todayAppointments.forEach { appt ->
                         val time = DateTimeFormatter.ofPattern("hh:mm a", Locale("es","ES")).format(
-                            Instant.ofEpochMilli(appt.startEpochMs).atZone(ZoneId.systemDefault()).toLocalTime()
+                            java.time.Instant.ofEpochMilli(appt.startEpochMs).atZone(ZoneId.systemDefault()).toLocalTime()
                         )
-                        Text("$time – ${appt.clientName}", modifier = Modifier.clickable { onAppointmentClick() })
+                        Text("Cita de hoy • ${appt.clientName} • $time", modifier = Modifier.clickable { onAppointmentClick() })
                     }
                 }
             }

@@ -26,6 +26,10 @@ class HomeViewModel(
         .getWithClientByDay(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
+    val tomorrowAppointments: StateFlow<List<AppointmentWithClient>> = appointmentDao
+        .getWithClientByDay(LocalDate.now().plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
     // Ingresos hoy
     val todayConfirmedIncome: StateFlow<Long> = billingRepository.sumPaidForDay(LocalDate.now())
         .map { it ?: 0L }

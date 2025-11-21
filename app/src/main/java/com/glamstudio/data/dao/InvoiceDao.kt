@@ -30,6 +30,9 @@ interface InvoiceDao {
     @Query("SELECT * FROM invoices ORDER BY createdAtEpochMs DESC")
     fun listAll(): Flow<List<InvoiceEntity>>
 
+    @Query("SELECT * FROM invoices WHERE createdAtEpochMs BETWEEN :startMs AND :endMs ORDER BY createdAtEpochMs DESC")
+    fun listByRange(startMs: Long, endMs: Long): Flow<List<InvoiceEntity>>
+
     @Query("SELECT SUM(totalCents) FROM invoices WHERE status = 'PAID' AND createdAtEpochMs BETWEEN :startMs AND :endMs")
     fun sumPaidInRange(startMs: Long, endMs: Long): Flow<Long?>
 

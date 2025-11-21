@@ -6,7 +6,6 @@ import com.glamstudio.data.entity.InvoiceEntity
 import com.glamstudio.data.entity.InvoiceItemEntity
 import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.ZoneId
 import java.util.UUID
 
@@ -15,6 +14,12 @@ class BillingRepository(
     private val appointments: AppointmentDao
 ) {
     fun listInvoices(): Flow<List<InvoiceEntity>> = invoices.listAll()
+
+    fun listInvoicesInMonth(date: LocalDate): Flow<List<InvoiceEntity>> {
+        val start = date.withDayOfMonth(1).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
+        val end = date.withDayOfMonth(date.lengthOfMonth()).plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli() - 1
+        return invoices.listByRange(start, end)
+    }
 
     suspend fun markPaid(id: String) = invoices.updateStatus(id, "PAID")
     suspend fun void(id: String) = invoices.updateStatus(id, "VOID")
