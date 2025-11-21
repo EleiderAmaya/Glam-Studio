@@ -1,6 +1,5 @@
 package com.glamstudio.ui.screens
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -18,36 +17,30 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.glamstudio.ui.theme.BorderLight
 import com.glamstudio.ui.theme.Primary
+import com.glamstudio.ui.viewmodel.HomeViewModel
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
-data class ProximaCita(val nombre: String, val detalle: String)
-
-/**
- * Dashboard inicial con:
- * - Lista compacta de próximas citas.
- * - KPIs rápidos reutilizables mediante `KpiCard`.
- * - FAB para acción primaria (agenda).
- *
- * Reutilización:
- * - Para añadir nuevas secciones, crea composables pequeños (p. ej. `KpiCard`, `ResumenXCard`) y colócalos aquí.
- * - `onFabClick`, `onReportsClick`, `onAppointmentClick` se pasan desde navegación; aquí solo emitimos eventos.
- * - Sustituye la lista demo `citas` por datos reales (ViewModel/StateFlow) sin tocar la navegación.
- */
 @Composable
 fun HomeScreen(onFabClick: () -> Unit, onReportsClick: () -> Unit = {}, onAppointmentClick: () -> Unit = {}) {
-    val citas = listOf(
-        ProximaCita("Cliente X", "Corte + Secado • 10:00 AM"),
-        ProximaCita("Cliente Y", "Coloración • 11:30 AM"),
-    )
+    val context = LocalContext.current
+    val vm: HomeViewModel = viewModel(factory = HomeViewModel.factory(context))
+    val citas by vm.todayAppointments.collectAsState()
 
     Surface(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.padding(16.dp)) {
@@ -74,13 +67,15 @@ fun HomeScreen(onFabClick: () -> Unit, onReportsClick: () -> Unit = {}, onAppoin
                             .clickable { onAppointmentClick() },
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        // Avatar placeholder
                         androidx.compose.foundation.Canvas(modifier = Modifier.height(48.dp).fillMaxWidth(0.15f)) {
                             drawCircle(color = Primary)
                         }
                         Column(modifier = Modifier.weight(1f).padding(start = 12.dp)) {
-                            Text(text = cita.nombre, fontWeight = FontWeight.SemiBold)
-                            Text(text = cita.detalle, color = Color(0xFF896175), fontSize = 12.sp)
+                            val time = DateTimeFormatter.ofPattern("hh:mm a", Locale("es","ES")).format(
+                                Instant.ofEpochMilli(cita.startEpochMs).atZone(ZoneId.systemDefault()).toLocalTime()
+                            )
+                            Text(text = cita.clientName, fontWeight = FontWeight.SemiBold)
+                            Text(text = time, color = Color(0xFF896175), fontSize = 12.sp)
                         }
                     }
                 }
@@ -96,7 +91,7 @@ fun HomeScreen(onFabClick: () -> Unit, onReportsClick: () -> Unit = {}, onAppoin
 
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 KpiCard(titulo = "Ingresos hoy", valor = "$120.000", modifier = Modifier.weight(1f))
-                KpiCard(titulo = "Citas hoy", valor = "2/5", modifier = Modifier.weight(1f))
+                KpiCard(titulo = "Citas hoy", valor = "${citas.size}", modifier = Modifier.weight(1f))
             }
 
             Spacer(modifier = Modifier.height(32.dp))
@@ -110,14 +105,6 @@ fun HomeScreen(onFabClick: () -> Unit, onReportsClick: () -> Unit = {}, onAppoin
     }
 }
 
-/**
- * Tarjeta simple para KPIs. Reutiliza este patrón para métricas en cualquier pantalla.
- *
- * Ejemplo:
- * ```
- * KpiCard(titulo = "Ticket promedio", valor = "$38.000")
- * ```
- */
 @Composable
 fun KpiCard(titulo: String, valor: String, modifier: Modifier = Modifier) {
     Surface(

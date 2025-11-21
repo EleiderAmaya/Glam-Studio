@@ -29,6 +29,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -36,55 +38,42 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.glamstudio.data.model.AppointmentWithClient
 import com.glamstudio.ui.theme.Primary
+import com.glamstudio.ui.viewmodel.CalendarViewModel
+import java.time.Instant
 import java.time.LocalDate
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
-enum class Ocupacion { LIBRE, MEDIO, COMPLETO }
-
-/**
- * Calendario mensual simplificado con selección de semana y lista de citas del día.
- *
- * Reutilización:
- * - Reemplaza `dias/ocupacionDemo` por tu modelo real (p. ej. generado desde un repositorio).
- * - Usa `onGenerateInvoice` para disparar el flujo de facturación desde una cita.
- * - Usa `onAppointmentClick` para navegar a detalle de cita.
- *
- * Extensión:
- * - Para parámetros (mes/año), expón `@Composable fun CalendarScreen(year: Int, month: Int, ...)`.
- * - Para disponibilidad por día, mapea `Ocupacion` según tus reglas de negocio.
- */
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun CalendarScreen(onDaySelected: (date: LocalDate) -> Unit, onGenerateInvoice: () -> Unit, onAppointmentClick: () -> Unit = {}) {
-    /* esta variable que guarda el estado de la fecha actual seleccionada */
     var currentDisplayedDate by remember { mutableStateOf(LocalDate.now()) }
     val daysInMonth = currentDisplayedDate.lengthOfMonth()
     val dias = (1..daysInMonth).toList()
-    // Se redibujará correctamente cada vez que cambies de mes.
-    val ocupacionDemo = remember {
-        mapOf(
-            5 to Ocupacion.COMPLETO,
-            9 to Ocupacion.MEDIO,
-            12 to Ocupacion.LIBRE,
-            15 to Ocupacion.COMPLETO,
-            18 to Ocupacion.MEDIO,
-            22 to Ocupacion.LIBRE,
-            27 to Ocupacion.MEDIO
-        )
+
+    val context = LocalContext.current
+    val vm: CalendarViewModel = viewModel(factory = CalendarViewModel.factory(context))
+
+    LaunchedEffect(currentDisplayedDate) {
+        vm.setMonth(currentDisplayedDate)
     }
-    val semanaSeleccionada = remember { mutableStateOf(2) } // 0-index, resalta una semana de ejemplo
+
+    val occupancy by vm.occupancyByDay.collectAsState()
+    val todayAppointments by vm.appointmentsWithClientForDay(LocalDate.now()).collectAsState(initial = emptyList())
 
     Column(modifier = Modifier
         .fillMaxSize()
         .padding(16.dp)) {
-        Row(verticalAlignment = Alignment.CenterVertically/*, modifier = Modifier.fillMaxWidth()*/) {
-            IconButton(onClick = {
-                // La lógica para cambiar de mes hacia atras.
-                currentDisplayedDate = currentDisplayedDate.minusMonths(1)
-            }) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            IconButton(onClick = { currentDisplayedDate = currentDisplayedDate.minusMonths(1) }) {
                 Icon(Icons.Default.ArrowBackIos, contentDescription = "Mes anterior")
             }
             Text(
@@ -93,10 +82,7 @@ fun CalendarScreen(onDaySelected: (date: LocalDate) -> Unit, onGenerateInvoice: 
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
             )
-            IconButton(onClick = {
-                // La lógica para cambiar de mes hacia adelante.
-                currentDisplayedDate = currentDisplayedDate.plusMonths(1)
-            }) {
+            IconButton(onClick = { currentDisplayedDate = currentDisplayedDate.plusMonths(1) }) {
                 Icon(Icons.Default.ArrowForwardIos, contentDescription = "Mes siguiente")
             }
         }
@@ -108,8 +94,7 @@ fun CalendarScreen(onDaySelected: (date: LocalDate) -> Unit, onGenerateInvoice: 
         }
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Grilla mensual 7 columnas; la primera fila deja 3 espacios (ejemplo)
-        val leadingEmpty = 3
+        val leadingEmpty = 3 // TODO: calcular según el primer día del mes si se requiere precisión
         val celdas = List(leadingEmpty) { 0 } + dias
 
         LazyVerticalGrid(
@@ -126,9 +111,17 @@ fun CalendarScreen(onDaySelected: (date: LocalDate) -> Unit, onGenerateInvoice: 
                     Box(modifier = Modifier.height(44.dp)) {}
                 } else {
                     val dia = celdas[index]
-                    val fila = index / 7
-                    val seleccionado = fila == semanaSeleccionada.value
-                    DiaCell(dia = dia, ocupacion = ocupacionDemo[dia], seleccionado = seleccionado) {
+                    val ratio = occupancy[dia] ?: 0f
+                    val color = when {
+                        ratio >= 1f -> Color(0xFFE53935) // rojo (full)
+                        ratio >= 0.5f -> Color(0xFFFFA726) // naranja (>= mitad)
+                        else -> Color(0xFF43A047) // verde (< mitad)
+                    }
+                    DiaCell(
+                        dia = dia,
+                        color = color,
+                        seleccionado = false,
+                    ) {
                         val selectedDate = LocalDate.of(currentDisplayedDate.year, currentDisplayedDate.month, dia)
                         onDaySelected(selectedDate)
                     }
@@ -144,8 +137,16 @@ fun CalendarScreen(onDaySelected: (date: LocalDate) -> Unit, onGenerateInvoice: 
             Column(modifier = Modifier
                 .fillMaxWidth()
                 .padding(12.dp)) {
-                Text("10:00 AM – Corte de cabello • Cliente X", modifier = Modifier.clickable { onAppointmentClick() })
-                Text("13:00 PM – Manicura • Cliente Y", modifier = Modifier.clickable { onAppointmentClick() })
+                if (todayAppointments.isEmpty()) {
+                    Text("Sin citas", color = Color.Gray)
+                } else {
+                    todayAppointments.forEach { appt ->
+                        val time = DateTimeFormatter.ofPattern("hh:mm a", Locale("es","ES")).format(
+                            Instant.ofEpochMilli(appt.startEpochMs).atZone(ZoneId.systemDefault()).toLocalTime()
+                        )
+                        Text("$time – ${appt.clientName}", modifier = Modifier.clickable { onAppointmentClick() })
+                    }
+                }
             }
         }
 
@@ -157,16 +158,10 @@ fun CalendarScreen(onDaySelected: (date: LocalDate) -> Unit, onGenerateInvoice: 
 @Composable
 private fun DiaCell(
     dia: Int,
-    ocupacion: Ocupacion?,
+    color: Color,
     seleccionado: Boolean,
     onClick: () -> Unit
 ) {
-    val color = when (ocupacion) {
-        Ocupacion.COMPLETO -> Color(0xFFE53935) // rojo
-        Ocupacion.MEDIO -> Color(0xFFFFA726) // naranja
-        Ocupacion.LIBRE -> Color(0xFF43A047) // verde
-        null -> Color.Transparent
-    }
     val border = if (seleccionado) BorderStroke(2.dp, Primary) else null
 
     Surface(
@@ -184,7 +179,7 @@ private fun DiaCell(
                 .background(
                     color.copy(alpha = if (color == Color.Transparent) 0f else 0.15f),
                     CircleShape
-                ) // Indicador de ocupación
+                )
         ) {
             if (dia > 0) {
                 Text(text = dia.toString(), style = MaterialTheme.typography.bodyMedium)
