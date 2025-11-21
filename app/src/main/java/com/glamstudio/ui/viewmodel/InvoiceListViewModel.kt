@@ -10,6 +10,7 @@ import com.glamstudio.data.repository.BillingRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -17,6 +18,7 @@ import java.time.LocalDate
 
 class InvoiceListViewModel(private val billing: BillingRepository) : ViewModel() {
     private val filterMonthOnly = MutableStateFlow(false)
+    val monthOnly: StateFlow<Boolean> = filterMonthOnly.asStateFlow()
 
     val invoices: StateFlow<List<InvoiceEntity>> = filterMonthOnly
         .flatMapLatest { onlyMonth ->

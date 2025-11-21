@@ -32,7 +32,7 @@ class ScheduleViewModel(
         startTime: LocalTime,
         selectedServices: List<ServiceEntity>,
         notes: String? = null
-    ) {
+    ): Boolean {
         val totalMinutes = selectedServices.sumOf { it.durationMinutes }
         val endTime = startTime.plusMinutes(totalMinutes.toLong())
         val dateEpochMs = date.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
@@ -47,7 +47,7 @@ class ScheduleViewModel(
             status = "SCHEDULED",
             notes = notes
         )
-        appointmentRepository.createOrUpdateWithServices(
+        return appointmentRepository.createOrUpdateWithServices(
             appointment = appointment,
             serviceIds = selectedServices.map { it.id }
         )

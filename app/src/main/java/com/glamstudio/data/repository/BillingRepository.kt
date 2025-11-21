@@ -24,6 +24,9 @@ class BillingRepository(
     suspend fun markPaid(id: String) = invoices.updateStatus(id, "PAID")
     suspend fun void(id: String) = invoices.updateStatus(id, "VOID")
 
+    suspend fun getById(id: String): InvoiceEntity? = invoices.getById(id)
+    suspend fun itemsForInvoice(id: String): List<InvoiceItemEntity> = invoices.getItems(id)
+
     suspend fun createInvoiceForAppointment(
         appointmentId: String,
         clientId: String,
@@ -55,7 +58,25 @@ class BillingRepository(
         return invoiceId
     }
 
-    // Métricas
+    suspend fun createInvoiceFromAppointmentId(appointmentId: String, clientId: String, extraPesos: Long?): String {
+        val services = appointments.getServicesForAppointment(appointmentId)
+        val invoiceId = createInvoiceForAppointment(appointmentId, clientId, services)
+        if (extraPesos != null && extraPesos > 0) {
+            val extraItem = InvoiceItemEntity(
+                id = UUID.randomUUID().toString(),
+                invoiceId = invoiceId,
+                serviceId = null,
+                quantity = 1,
+                unitPriceCents = extraPesos * 100,
+                description = "Cargo extra"
+            )
+            invoices.upsertItems(listOf(extraItem))
+            val current = invoices.getById(invoiceId) ?: return invoiceId
+            invoices.upsertInvoice(current.copy(totalCents = current.totalCents + extraPesos * 100))
+        }
+        return invoiceId
+    }
+
     fun sumPaidForDay(date: LocalDate): Flow<Long?> {
         val start = date.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
         val end = date.plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli() - 1

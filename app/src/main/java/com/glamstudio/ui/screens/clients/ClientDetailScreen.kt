@@ -25,6 +25,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -73,7 +74,7 @@ fun ClientDetailScreen(clientId: String, onSaved: () -> Unit, onBack: () -> Unit
         }
     ) { paddingValues ->
         Column(modifier = Modifier.fillMaxSize().padding(paddingValues).padding(16.dp)) {
-            OutlinedTextField(value = nombre.value, onValueChange = { if (editMode.value) nombre.value = it }, label = { Text("Nombre completo") }, modifier = Modifier.fillMaxWidth(), readOnly = !editMode.value)
+            OutlinedTextField(value = nombre.value, onValueChange = { if (editMode.value) nombre.value = it }, label = { Text("Nombre completo") }, modifier = Modifier.fillMaxWidth(), enabled = editMode.value)
             OutlinedTextField(
                 value = telefono.value,
                 onValueChange = { if (editMode.value) telefono.value = it.filter { ch -> ch.isDigit() } },
@@ -82,17 +83,17 @@ fun ClientDetailScreen(clientId: String, onSaved: () -> Unit, onBack: () -> Unit
                 isError = editMode.value && telefono.value.isNotBlank() && !phoneIsValid,
                 supportingText = { if (editMode.value && telefono.value.isNotBlank() && !phoneIsValid) Text("7–12 dígitos") },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                readOnly = !editMode.value
+                enabled = editMode.value
             )
-            OutlinedTextField(value = email.value, onValueChange = { if (editMode.value) email.value = it }, label = { Text("Email (opcional)") }, modifier = Modifier.fillMaxWidth(), readOnly = !editMode.value)
-            OutlinedTextField(value = direccion.value, onValueChange = { if (editMode.value) direccion.value = it }, label = { Text("Dirección principal") }, modifier = Modifier.fillMaxWidth(), readOnly = !editMode.value)
-            OutlinedTextField(value = barrio.value, onValueChange = { if (editMode.value) barrio.value = it }, label = { Text("Barrio (opcional)") }, modifier = Modifier.fillMaxWidth(), readOnly = !editMode.value)
-            OutlinedTextField(value = notas.value, onValueChange = { if (editMode.value) notas.value = it }, label = { Text("Notas") }, modifier = Modifier.fillMaxWidth(), readOnly = !editMode.value)
+            OutlinedTextField(value = email.value, onValueChange = { if (editMode.value) email.value = it }, label = { Text("Email (opcional)") }, modifier = Modifier.fillMaxWidth(), enabled = editMode.value)
+            OutlinedTextField(value = direccion.value, onValueChange = { if (editMode.value) direccion.value = it }, label = { Text("Dirección principal") }, modifier = Modifier.fillMaxWidth(), enabled = editMode.value)
+            OutlinedTextField(value = barrio.value, onValueChange = { if (editMode.value) barrio.value = it }, label = { Text("Barrio (opcional)") }, modifier = Modifier.fillMaxWidth(), enabled = editMode.value)
+            OutlinedTextField(value = notas.value, onValueChange = { if (editMode.value) notas.value = it }, label = { Text("Notas") }, modifier = Modifier.fillMaxWidth(), enabled = editMode.value)
 
             Spacer(modifier = Modifier.height(8.dp))
             Row(modifier = Modifier.fillMaxWidth()) {
                 Text("Activo", modifier = Modifier.weight(1f))
-                Switch(checked = activo.value, onCheckedChange = { if (editMode.value) activo.value = it })
+                Switch(checked = activo.value, onCheckedChange = { if (editMode.value) activo.value = it }, enabled = editMode.value)
             }
 
             Spacer(modifier = Modifier.height(16.dp))

@@ -24,6 +24,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -60,6 +62,8 @@ fun ScheduleAppointmentScreen(date: LocalDate, onBack: () -> Unit) {
     val clients by vm.clients.collectAsState(initial = emptyList())
     val services by vm.services.collectAsState(initial = emptyList())
 
+    val snackbarHostState: SnackbarHostState = remember { SnackbarHostState() }
+
     var isClientMenuExpanded by remember { mutableStateOf(false) }
     var selectedClient: ClientEntity? by remember { mutableStateOf(null) }
 
@@ -94,7 +98,8 @@ fun ScheduleAppointmentScreen(date: LocalDate, onBack: () -> Unit) {
                     }
                 }
             )
-        }
+        },
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
     ) { padding ->
         Column(
             modifier = Modifier
@@ -234,13 +239,17 @@ fun ScheduleAppointmentScreen(date: LocalDate, onBack: () -> Unit) {
                     val start = startTime
                     if (clientId != null && start != null && selectedServices.isNotEmpty()) {
                         scope.launch {
-                            vm.saveAppointment(
+                            val ok = vm.saveAppointment(
                                 clientId = clientId,
                                 date = date,
                                 startTime = start,
                                 selectedServices = selectedServices.toList()
                             )
-                            onBack()
+                            if (ok) {
+                                onBack()
+                            } else {
+                                snackbarHostState.showSnackbar("Ya existe una cita en ese horario")
+                            }
                         }
                     }
                 },

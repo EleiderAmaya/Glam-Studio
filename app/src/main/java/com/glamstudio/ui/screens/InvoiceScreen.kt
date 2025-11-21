@@ -1,5 +1,6 @@
 package com.glamstudio.ui.screens
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -41,11 +42,25 @@ private fun formatCop(cents: Long): String {
     return "${nf.format(pesos)},${cs.toString().padStart(2, '0')} COP"
 }
 
+private fun statusEs(status: String): String = when (status) {
+    "PAID" -> "Pagada"
+    "VOID" -> "Anulada"
+    "ISSUED" -> "Emitida"
+    else -> status
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun InvoiceScreen(showBack: Boolean = false, onBack: () -> Unit = {}, onViewReports: () -> Unit = {}) {
+fun InvoiceScreen(
+    showBack: Boolean = false,
+    onBack: () -> Unit = {},
+    onViewReports: () -> Unit = {},
+    onCreateFromAppointment: () -> Unit = {},
+    onInvoiceClick: (String) -> Unit = {}
+) {
     val vm: InvoiceListViewModel = viewModel(factory = InvoiceListViewModel.factory(androidx.compose.ui.platform.LocalContext.current))
     val invoices by vm.invoices.collectAsState()
+    val monthOnly by vm.monthOnly.collectAsState()
 
     Scaffold(
         topBar = {
@@ -65,18 +80,18 @@ fun InvoiceScreen(showBack: Boolean = false, onBack: () -> Unit = {}, onViewRepo
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text("Mes actual")
                     Spacer(modifier = Modifier.width(4.dp))
-                    Switch(checked = false, onCheckedChange = { vm.toggleMonthOnly() })
+                    Switch(checked = monthOnly, onCheckedChange = { vm.toggleMonthOnly() })
                 }
             }
             Spacer(modifier = Modifier.height(8.dp))
 
             LazyColumn {
                 items(invoices) { inv ->
-                    Surface(modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp)) {
+                    Surface(modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp).clickable { onInvoiceClick(inv.id) }) {
                         Row(modifier = Modifier.fillMaxWidth().padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
                             Column(modifier = Modifier.weight(1f)) {
                                 Text(text = formatCop(inv.totalCents))
-                                Text(text = inv.status)
+                                Text(text = statusEs(inv.status))
                             }
                             if (inv.status != "PAID") {
                                 TextButton(onClick = { vm.markPaid(inv.id) }) { Text("Marcar pagada") }
@@ -90,7 +105,11 @@ fun InvoiceScreen(showBack: Boolean = false, onBack: () -> Unit = {}, onViewRepo
             }
 
             Spacer(modifier = Modifier.height(12.dp))
-            Button(onClick = onViewReports, modifier = Modifier.fillMaxWidth()) { Text("Ver reportes") }
+            Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                Button(onClick = onViewReports, modifier = Modifier.weight(1f)) { Text("Ver reportes") }
+                Spacer(modifier = Modifier.width(8.dp))
+                Button(onClick = onCreateFromAppointment, modifier = Modifier.weight(1f)) { Text("Crear factura desde cita") }
+            }
         }
     }
 }

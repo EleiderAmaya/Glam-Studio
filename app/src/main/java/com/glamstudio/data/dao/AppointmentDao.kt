@@ -8,6 +8,7 @@ import androidx.room.Transaction
 import androidx.room.Upsert
 import com.glamstudio.data.entity.AppointmentEntity
 import com.glamstudio.data.entity.AppointmentServiceCrossRef
+import com.glamstudio.data.entity.ServiceEntity
 import com.glamstudio.data.model.AppointmentWithClient
 import kotlinx.coroutines.flow.Flow
 
@@ -18,6 +19,12 @@ interface AppointmentDao {
 
     @Query("DELETE FROM appointments WHERE id = :id")
     suspend fun deleteById(id: String)
+
+    @Query("SELECT * FROM appointments WHERE id = :id LIMIT 1")
+    suspend fun getById(id: String): AppointmentEntity?
+
+    @Query("UPDATE appointments SET status = :status WHERE id = :id")
+    suspend fun updateStatus(id: String, status: String)
 
     @Query("SELECT * FROM appointments WHERE dateEpochMs = :dateEpochMs ORDER BY startEpochMs ASC")
     fun getByDay(dateEpochMs: Long): Flow<List<AppointmentEntity>>
@@ -37,6 +44,16 @@ interface AppointmentDao {
 
     @Query("DELETE FROM appointment_services WHERE appointmentId = :appointmentId")
     suspend fun deleteCrossRefsForAppointment(appointmentId: String)
+
+    @Query(
+        "SELECT COUNT(*) FROM appointments WHERE (:excludeId IS NULL OR id <> :excludeId) AND startEpochMs < :endMs AND endEpochMs > :startMs"
+    )
+    suspend fun countOverlaps(startMs: Long, endMs: Long, excludeId: String?): Int
+
+    @Query(
+        "SELECT s.* FROM services s INNER JOIN appointment_services asr ON asr.serviceId = s.id WHERE asr.appointmentId = :appointmentId"
+    )
+    suspend fun getServicesForAppointment(appointmentId: String): List<ServiceEntity>
 
     @Query(
         "SELECT IFNULL(SUM(s.priceCents), 0) FROM appointment_services as asr " +

@@ -22,7 +22,7 @@ import com.glamstudio.data.entity.ServiceEntity
         InvoiceEntity::class,
         InvoiceItemEntity::class
     ],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 abstract class GlamDatabase : RoomDatabase() {

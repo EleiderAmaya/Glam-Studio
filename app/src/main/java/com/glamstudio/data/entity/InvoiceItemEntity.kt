@@ -26,7 +26,7 @@ import androidx.room.PrimaryKey
 data class InvoiceItemEntity(
     @PrimaryKey val id: String,
     val invoiceId: String,
-    val serviceId: String,
+    val serviceId: String?,
     val quantity: Int = 1,
     val unitPriceCents: Long,
     val description: String?

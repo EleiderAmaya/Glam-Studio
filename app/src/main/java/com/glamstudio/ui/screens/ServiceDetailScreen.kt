@@ -15,16 +15,19 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.ContextAmbient
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -46,16 +49,25 @@ fun ServiceDetailScreen(serviceId: String, onSaved: () -> Unit, onBack: () -> Un
     val precio = remember { mutableStateOf("") }
     val editMode = remember { mutableStateOf(false) }
 
+    val error by vm.error.collectAsState()
+    val snackbarHost = remember { SnackbarHostState() }
+    LaunchedEffect(error) { error?.let { snackbarHost.showSnackbar(it) } }
+
     LaunchedEffect(vm.service) {
         vm.service.value?.let { s ->
             nombre.value = s.name
             descripcion.value = s.description ?: ""
-            duracion.value = s.activeDuration().toString()
+            duracion.value = s.durationMinutes.toString()
             precio.value = (s.priceCents / 100).toString()
         }
     }
 
-    val durationOk = duracion.value.toIntOrNull()?.let { it in 5..(12 * 60) } ?: false
+    fun durationInRange(s: String): Boolean {
+        val v = s.toIntOrNull() ?: return false
+        return v in 5..(12 * 60)
+    }
+
+    val durationOk = durationInRange(duracion.value)
     val priceOk = precio.value.toLongOrNull()?.let { it >= 0 } ?: false
 
     Scaffold(
@@ -64,13 +76,14 @@ fun ServiceDetailScreen(serviceId: String, onSaved: () -> Unit, onBack: () -> Un
                 title = { Text("Detalle de servicio", fontWeight = FontWeight.Bold) },
                 navigationIcon = { IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = "Atrás") } }
             )
-        }
+        },
+        snackbarHost = { SnackbarHost(hostState = snackbarHost) }
     ) { paddingValues ->
         Column(modifier = Modifier.fillMaxSize().padding(paddingValues).padding(16.dp)) {
-            OutlinedTextField(value = nombre.value, onValueChange = { if (editMode.value) nombre.value = it }, label = { Text("Nombre del servicio") }, modifier = Modifier.fillMaxWidth(), readOnly = !editMode.value)
-            OutlinedTextField(value = descripcion.value, onValueChange = { if (editMode.value) descripcion.value = it }, label = { Text("Descripción") }, modifier = Modifier.fillMaxWidth(), readOnly = !editMode.value)
-            OutlinedTextField(value = duracion.value, onValueChange = { if (editMode.value) duracion.value = it.filter { ch -> ch.isDigit() } }, label = { Text("Duración (min)") }, modifier = Modifier.fillMaxWidth(), keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number), isError = editMode.value && !durationOk, readOnly = !editMode.value)
-            OutlinedTextField(value = precio.value, onValueChange = { if (editMode.value) precio.value = it.filter { ch -> ch.isDigit() } }, label = { Text("Precio (COP)") }, modifier = Modifier.fillMaxWidth(), keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number), isError = editMode.value && !priceOk, readOnly = !editMode.value)
+            OutlinedTextField(value = nombre.value, onValueChange = { if (editMode.value) nombre.value = it }, label = { Text("Nombre del servicio") }, modifier = Modifier.fillMaxWidth(), enabled = editMode.value)
+            OutlinedTextField(value = descripcion.value, onValueChange = { if (editMode.value) descripcion.value = it }, label = { Text("Descripción") }, modifier = Modifier.fillMaxWidth(), enabled = editMode.value)
+            OutlinedTextField(value = duracion.value, onValueChange = { if (editMode.value) duracion.value = it.filter { ch -> ch.isDigit() } }, label = { Text("Duración (min)") }, modifier = Modifier.fillMaxWidth(), keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number), isError = editMode.value && !durationOk, enabled = editMode.value)
+            OutlinedTextField(value = precio.value, onValueChange = { if (editMode.value) precio.value = it.filter { ch -> ch.isDigit() } }, label = { Text("Precio (COP)") }, modifier = Modifier.fillMaxWidth(), keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number), isError = editMode.value && !priceOk, enabled = editMode.value)
 
             Spacer(modifier = Modifier.height(16.dp))
             Row(modifier = Modifier.fillMaxWidth()) {
@@ -96,12 +109,6 @@ fun ServiceDetailScreen(serviceId: String, onSaved: () -> Unit, onBack: () -> Un
             }
         }
     }
-}
-
-// helper to check numeric range
-private fun durationOk(s: String): Boolean {
-    val v = s.toIntOrNull() ?: return false
-    return v in 5..(12 * 60)
 }
 
 

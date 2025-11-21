@@ -20,6 +20,12 @@ interface ServiceDao {
     @Query("SELECT * FROM services WHERE isActive = 1 ORDER BY name ASC")
     fun getActive(): Flow<List<ServiceEntity>>
 
+    @Query("SELECT * FROM services WHERE isActive = 1 ORDER BY name ASC")
+    suspend fun getActiveOnce(): List<ServiceEntity>
+
     @Query("SELECT * FROM services WHERE name LIKE '%' || :query || '%' ORDER BY name ASC")
     fun search(query: String): Flow<List<ServiceEntity>>
+
+    @Query("SELECT COUNT(*) FROM appointment_services WHERE serviceId = :serviceId")
+    suspend fun countUsageInAppointments(serviceId: String): Int
 }

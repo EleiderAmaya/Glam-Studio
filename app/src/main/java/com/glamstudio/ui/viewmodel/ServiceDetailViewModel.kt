@@ -15,6 +15,9 @@ class ServiceDetailViewModel(private val repo: ServiceRepository, private val se
     private val _service = MutableStateFlow<ServiceEntity?>(null)
     val service: StateFlow<ServiceEntity?> = _service
 
+    private val _error = MutableStateFlow<String?>(null)
+    val error: StateFlow<String?> = _error
+
     init {
         viewModelScope.launch { _service.value = repo.getById(serviceId) }
     }
@@ -35,7 +38,21 @@ class ServiceDetailViewModel(private val repo: ServiceRepository, private val se
         }
     }
 
-    fun delete(onDone: () -> Unit) { viewModelScope.launch { repo.deleteById(serviceId); onDone() } }
+    fun delete(onDone: () -> Unit) {
+        viewModelScope.launch {
+            val usage = repo.countUsageInAppointments(serviceId)
+            if (usage > 0) {
+                _error.value = "No se puede eliminar: el servicio tiene citas asociadas"
+                return@launch
+            }
+            try {
+                repo.deleteById(serviceId)
+                onDone()
+            } catch (e: Exception) {
+                _error.value = "No se pudo eliminar el servicio"
+            }
+        }
+    }
 
     companion object {
         fun factory(context: Context, serviceId: String): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
